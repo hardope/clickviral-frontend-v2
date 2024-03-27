@@ -6,6 +6,14 @@ body {
     background-color: #f0f0f0; /* Light gray background color */
 }
 
+#mobile-top-bar {
+    display: none;
+}
+
+main {
+    padding: 10px;
+}
+
 nav {
     position: sticky;
     top: 0;
@@ -29,6 +37,11 @@ nav {
 .nav img {
     width: 30px; /* Adjust icon size as needed */
     height: 30px;
+}
+
+.nav-items.active img {
+    width: 40px; /* Adjust icon size as needed */
+    height: 40px;
 }
 
 #logo {
@@ -66,7 +79,7 @@ nav {
 
 #sidebar-user-profile {
     display: flex;
-    margin-top: 35vh;
+    margin-top: calc(100vh - 70vh);
     flex: inline-flex;
     align-items: center;
     padding: 10px 20px;
@@ -90,6 +103,56 @@ nav {
 
 /* For small screens */
 @media (max-width: 767px) {
+
+    #mobile-top-bar {
+        display: block;
+        padding: 5px;
+        position: fixed;
+        display: flex;
+        justify-content: space-between;
+        height: 38px;
+        padding: 10px;
+        top: 0;
+        left: 0;
+        width: 98vw;
+        background-color: #fff;
+        border-bottom: 1px solid rgba(135, 206, 235, 0.5);
+        z-index: 999;
+    }
+
+    #mobile-top-bar img {
+        width: 30px;
+        height: 30px;
+    }
+
+    #mobile-logo img {
+        width: 45px;
+        height: auto;
+        margin-top: -5px;
+    }
+
+    #mobile-top-bar div {
+        justify-content: space-between;
+        width: 30vw;
+    }
+
+    #nav-menu-icon {
+        margin-left: 30px;
+    }
+
+    main {
+        height: 70vh;
+        margin-top: 60px;
+    }
+
+    nav {
+        position: fixed; /* Change position to fixed */
+        top: auto; /* Remove top positioning */
+        bottom: 0; /* Stick it to the bottom */
+        left: 0; /* Optionally align it to the left */
+        width: 100%; /* Make it full width */
+    }
+
     .logo {
         display: none; /* Hide logo on small screens */
     }
@@ -100,14 +163,15 @@ nav {
 
     .search-form.active {
         position: fixed;
-        top: 50%;
+        top: -85vh;
+        bottom: auto;
         left: 50%;
         transform: translate(-50%, -50%);
         background-color: #fff;
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        z-index: 999; /* Ensure the popup appears above other content */
+        z-index: 1000; /* Ensure the popup appears above other content */
         display: block; /* Show the form if it has the "active" class */
     }
 
@@ -123,6 +187,7 @@ nav {
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         align-self: center;
         text-align: left;
+        margin-top: 40px;
     }
 
     #sidebar-options {
@@ -151,8 +216,21 @@ nav {
 
 /* For larger screens */
 @media (min-width: 768px) {
+
+    main {
+        margin-left: 20vw;
+    }
+
     .nav {
         justify-content: space-between; /* Align logo to left and form to right */
+    }
+
+    .other-nav-body {
+        width: 40vh;
+    }
+
+    #nav-menu span {
+        margin: 50px;
     }
 
     .logo {
@@ -186,11 +264,6 @@ nav {
         background-color: #f0f0f0; /* Match body background color */
         border-right: 1px solid #ccc; /* Thin gray border */
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    main {
-        margin-left: 20vw;
-        padding: 20px;
     }
 
     #sidebar-options {

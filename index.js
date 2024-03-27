@@ -1,12 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     const nav = document.getElementById('nav');
-    const searchIcon = document.querySelector('.search-icon');
-    const menuIcon = document.getElementById('menu-icon');
+    const searchIcon = document.getElementById('nav-search-icon');
+    const menuIcon = document.getElementById('nav-menu-icon');
     const searchForm = document.getElementById('search-form');
     const sidebar = document.getElementById('sidebar');
     const sidebar_return = document.getElementById('sidebar-return');
     const contentDiv = document.getElementById('content');
     const loader = document.getElementById('loader');
+    const main = document.getElementById('main');
 
     function showLoader() {
         loader.style.display = 'block';
@@ -47,13 +48,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     menuIcon.addEventListener('click', function(event) {
+        if (sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active')
+            main.style.display = 'block'
+        }
         event.preventDefault(); // Prevent the default action of the menu icon
         sidebar.classList.toggle('active');
+        main.style.display = 'none'
     });
 
     sidebar_return.addEventListener('click', function(event) {
         event.preventDefault(); // Prevent the default action of the sidebar return icon
         sidebar.classList.remove('active');
+        main.style.display = 'block';
     });        
 
     // Close the search form if clicked outside of it
