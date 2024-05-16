@@ -20,6 +20,8 @@ $(document).ready(function() {
     });
 
     $("#sign-in-form").submit(function(e) {
+        let email = $("#sign-in-form .email").val();
+        let password = $("#sign-in-form .password").val();
         Login(email, password);
         e.preventDefault();
     });
