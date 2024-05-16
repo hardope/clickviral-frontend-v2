@@ -1,43 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const nav = document.getElementById('nav');
     const searchIcon = document.getElementById('nav-search-icon');
     const menuIcon = document.getElementById('nav-menu-icon');
     const searchForm = document.getElementById('search-form');
     const sidebar = document.getElementById('sidebar');
     const sidebar_return = document.getElementById('sidebar-return');
-    const contentDiv = document.getElementById('content');
-    const loader = document.getElementById('loader');
     const main = document.getElementById('main');
-
-    function showLoader() {
-        loader.style.display = 'block';
-    }
-    function hideLoader() {
-        loader.style.display = 'none';
-    }
-
-    function loadPage(url) {
-        showLoader(); // Show loader while content is loading
-        fetch(url)
-            .then(response => response.text())
-            .then(html => {
-
-                if (!html) {
-                    contentDiv.innerHTML = '<h1>Page not found</h1>';
-                    hideLoader(); // Hide loader in case of error
-                    return;
-                }
-
-                contentDiv.innerHTML = html;
-                hideLoader(); // Hide loader once content is loaded
-            })
-            .catch(error => {
-
-                contentDiv.innerHTML = '<h1>Page not found</h1>';
-                
-                hideLoader(); // Hide loader in case of error
-        });
-    }
 
     loadPage('templates/home.html');
     document.querySelector('#home').classList.add('active');
@@ -80,4 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
             loadPage(url);
         });
     });
+
+    if (!IsAuthenticated()) {
+        window.location.href = '/auth';
+    }
 });
