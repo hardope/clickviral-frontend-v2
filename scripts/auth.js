@@ -20,9 +20,13 @@ $(document).ready(function() {
     });
 
     $("#sign-in-form").submit(function(e) {
-        email=$("#sign-in-form .email").val();
-        password=$("#sign-in-form .password").val();
         Login(email, password);
         e.preventDefault();
     });
+
+    $("#sign-up-form").submit(function(e) {
+        SignUp();
+        e.preventDefault();
+    });
+
 });

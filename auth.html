@@ -16,40 +16,40 @@
 					<h2 class="title">Sign In</h2>
 					<div class="input-field">
 						<i class="fas fa-user"></i>
-						<input type="email" class="email" placeholder="Username" />
+						<input type="email" class="email" placeholder="Username" required />
 					</div>
 					<div class="input-field">
 						<i class="fas fa-lock"></i>
-						<input type="password" class="password" placeholder="Password" />
+						<input type="password" class="password" placeholder="Password" required />
 					</div>
 					<input type="submit" value="Login" class="btn solid" />
 				</form>
 
-				<form class="sign-up-form" style="margin-top: -20px;">
+				<form class="sign-up-form" id="sign-up-form" style="margin-top: -20px;">
 					<h2 class="title">Sign Up</h2>
 					<div class="input-field">
 						<i class="fas fa-user"></i>
-						<input type="text" id="username" placeholder="Username" />
+						<input type="text" id="username" placeholder="Username" required />
 					</div>
 					<div class="input-field">
 						<i class="fas fa-envelope"></i>
-						<input type="email" class="email" placeholder="Email" />
+						<input type="email" class="email" placeholder="Email" required />
 					</div>
 					<div class="input-field">
 						<i class="fas fa-user"></i>
-						<input type="text" id="first_name" placeholder="First Name" />
+						<input type="text" id="first_name" placeholder="First Name" required />
 					</div>
 					<div class="input-field">
 						<i class="fas fa-user"></i>
-						<input type="text" id="last_name" placeholder="Last Name" />
+						<input type="text" id="last_name" placeholder="Last Name" required />
 					</div>
 					<div class="input-field">
 						<i class="fas fa-lock"></i>
-						<input type="password" class="password" placeholder="Password" />
+						<input type="password" class="password" placeholder="Password" required />
 					</div>
 					<div class="input-field">
 						<i class="fas fa-lock"></i>
-						<input type="password" id="confirm_password" placeholder="Confirm Password" />
+						<input type="password" id="confirm_password" placeholder="Confirm Password" required />
 					</div>
 					<input type="submit" value="Sign Up" class="btn solid" />
 				</form>
@@ -77,6 +77,18 @@
 			</div>
 		</div>
 	</div>
+
+	<div id="otp-popup" class="popup">
+		<div class="popup-content">
+			<form id="popup_form">
+				<h2>Enter OTP</h2>
+				<input type="text" id="otp-input" placeholder="Enter 6-digit OTP" maxlength="6" />
+				<button id="otp-submit-btn">Submit</button>
+			</form>
+		</div>
+	</div>
+	  
+
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
