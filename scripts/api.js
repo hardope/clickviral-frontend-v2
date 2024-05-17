@@ -28,15 +28,20 @@ function Login(email, password) {
 	})
 	.then((response) => response.json())
 	.then((data) => {
-		if (data.status != "success") {
+		if (data.status == "success - otp") {
+			Notify('info', 'Two Factor Authentication', 'Auth');
+			GetLogInOTP(email);
+			return;
+		} else if (data.status != "success") {
 			Notify('error', "Invalid Credentials", 'Auth');
 			return;
+		} else {
+			Notify('success', 'You have successfully signed in!', 'Auth');
+			sessionStorage.setItem("token", data.data.token);
+			setTimeout(() => {
+				window.location.href = "/";
+			}, 3000);
 		}
-		Notify('success', 'You have successfully signed in!', 'Auth');
-		sessionStorage.setItem("token", data.data.token);
-		setTimeout(() => {
-			window.location.href = "/";
-		}, 3000);
 	})
 	.catch((error) => {
 		console.error("Error:", error);
@@ -133,4 +138,43 @@ function GetSignUpOTP (id, email, password) {
         }
 		e.preventDefault();
     });
+}
+
+function GetLogInOTP(email) {
+	//get OTP FROM USER
+
+	openOtpPopup();
+
+	$('#popup_form').submit(function(e) {
+		const inputOtp = $('#otp-input').val();
+		if (inputOtp.length === 6 ){
+			otp = inputOtp;
+			fetch(`${API()}/user/two-factor-login`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					email: email,
+					otp: otp,
+				}),
+			})
+			.then((response) => response.json())
+			.then((data) => {
+				if (data.status != "success") {
+					Notify('error', data.message, 'Auth');
+					return;
+				}
+				closeOtpPopup();
+				sessionStorage.setItem("token", data.data.token);
+				Notify('success', 'You have successfully signed in!', 'Auth');
+				setInterval(() => {
+					window.location.href = "/";
+				}, 3000);
+			})
+		} else {
+		  	Notify('error', 'Invalid OTP', 'Auth');
+		}
+		e.preventDefault();
+	});
 }
