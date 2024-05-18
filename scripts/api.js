@@ -13,3 +13,8 @@ function IsAuthenticated() {
 function Token() {
 	return sessionStorage.getItem("token");
 }
+
+function LogOut() {
+	sessionStorage.removeItem("token");
+	window.location.href = "/auth";
+}

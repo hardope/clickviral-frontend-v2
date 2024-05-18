@@ -12,7 +12,7 @@ function Login(email, password) {
 	})
 	.then((response) => response.json())
 	.then((data) => {
-		if (data.status == "success - otp") {
+		if (data.status == "success - otp") {git st
 			Notify('info', 'Two Factor Authentication', 'Auth');
 			GetLogInOTP(email);
 			return;
@@ -68,13 +68,7 @@ function SignUp() {
 		}
 		Notify('success', 'You have successfully signed up!', 'Auth');
 		GetSignUpOTP(data.data.id, email, password);
-		sessionStorage.setItem("token", data.token);
 	})
-}
-
-function LogOut() {
-	sessionStorage.removeItem("token");
-	window.location.href = "/auth";
 }
 
 function openOtpPopup() {
