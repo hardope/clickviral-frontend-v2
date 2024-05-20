@@ -52,6 +52,9 @@ function Login(email, password) {
 			Notify('info', 'Two Factor Authentication', 'Auth');
 			GetLogInOTP(email);
 			return;
+		} else if (data.status == "unauthorized-inactive") {
+			Notify('error', "Your account is inactive", 'Auth');
+
 		} else if (data.status != "success") {
 			Notify('error', "Invalid Credentials", 'Auth');
 			return;
