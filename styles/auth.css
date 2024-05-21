@@ -44,7 +44,7 @@ input {
 }
 
 /* Input field */
-#otp-input {
+.popup form input {
   width: calc(100% - 40px);
   padding: 10px;
   margin: 10px 0 20px 0; /* Added bottom margin to create space */
@@ -55,7 +55,7 @@ input {
 }
 
 /* Submit button */
-#otp-submit-btn {
+.popup form button {
   background-color: #5995fd;
   border: none;
   color: white;
@@ -66,7 +66,7 @@ input {
   width: calc(100% - 40px); /* Ensure button width matches input field */
 }
 
-#otp-submit-btn:hover {
+.popup form button:hover {
   background-color: #4d84e2;
 }
 

@@ -33,7 +33,6 @@ $(document).ready(function() {
 
 });
 
-
 function Login(email, password) {
 	Notify('info', 'Signing You In...', 'Auth');
 	fetch(`${API()}/user/login`, {
@@ -48,22 +47,28 @@ function Login(email, password) {
 	})
 	.then((response) => response.json())
 	.then((data) => {
-		if (data.status == "success - otp") {
+		if (data.status === "unauthorized") {
+			Notify('error', "Invalid Credentials", 'Auth');
+			return;
+		} else if (data.status === "unauthorized-inactive") {
+			Notify('error', "Account is not activated", 'Auth');
+			Notify('info', "Activating Account...", 'Auth');
+			InitiateActivateAccount(email);
+			return;
+		} else if (data.status === "success - otp") {
 			Notify('info', 'Two Factor Authentication', 'Auth');
 			GetLogInOTP(email);
 			return;
-		} else if (data.status == "unauthorized-inactive") {
-			Notify('error', "Your account is inactive", 'Auth');
-
-		} else if (data.status != "success") {
-			Notify('error', "Invalid Credentials", 'Auth');
-			return;
-		} else {
+		} else if (data.status === "success") {
 			Notify('success', 'You have successfully signed in!', 'Auth');
 			sessionStorage.setItem("token", data.data.token);
 			setTimeout(() => {
 				window.location.href = "/";
 			}, 3000);
+			return;
+		} else {
+			Notify('error', data.message, 'Auth');
+			return;
 		}
 	})
 	.catch((error) => {
@@ -120,14 +125,22 @@ function closeOtpPopup() {
 	$('#otp-popup').fadeOut();
 }
 
-  // Event handler for the OTP submit button
+function openEmailPopup() {
+	$('#email-popup').fadeIn();
+}
+
+function closeEmailPopup() {
+	$('#email-popup').fadeOut();
+}
+
+// Event handler for the OTP submit button
 
 function GetSignUpOTP (id, email, password) {
     //get OTP FROM USER
 
     openOtpPopup();
 
-	$('#popup_form').submit(function(e) {
+	$('#otp_popup_form').submit(function(e) {
         const inputOtp = $('#otp-input').val();
         if (inputOtp.length === 6 ){
 			otp = inputOtp;
@@ -162,7 +175,7 @@ function GetLogInOTP(email) {
 
 	openOtpPopup();
 
-	$('#popup_form').submit(function(e) {
+	$('#otp_popup_form').submit(function(e) {
 		const inputOtp = $('#otp-input').val();
 		if (inputOtp.length === 6 ){
 			otp = inputOtp;
@@ -189,9 +202,84 @@ function GetLogInOTP(email) {
 					window.location.href = "/";
 				}, 3000);
 			})
+			.catch((error) => {
+				console.error("Error:", error);
+				Notify('error', 'An Error Occured Check Your In', 'Auth');
+			});
 		} else {
 		  	Notify('error', 'Invalid OTP', 'Auth');
 		}
 		e.preventDefault();
 	});
+}
+
+function InitiateActivateAccount(email){
+	user_id = '';
+	fetch(`${API()}/user/find-account`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			email: email,
+		}),
+	})
+	.then((response) => response.json())
+	.then((data) => {
+		if (data.status != "success") {
+			Notify('error', data.message, 'Auth');
+			return;
+		}
+		user_id = data.data;
+		fetch(`${API()}/user/send-verification-email/${user_id}`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				email: email,
+			}),
+		})
+		.then((response) => response.json())
+		.then((data) => {
+			if (data.status != "success") {
+				Notify('error', data.message, 'Auth');
+				return;
+			}
+			Notify('info', 'Check your email for OTP to activate your account', 'Auth');
+		})
+		.catch((error) => {
+			console.error("Error:", error);
+			Notify('error', 'An Error Occured Check Your In', 'Auth');
+		});
+		openOtpPopup();
+		$('#otp_popup_form').submit(function(e) {
+			const inputOtp = $('#otp-input').val();
+			if (inputOtp.length === 6 ){
+				otp = inputOtp;
+				fetch(`${API()}/user/verify/${user_id}`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						otp: otp,
+					}),
+				})
+				.then((response) => response.json())
+				.then((data) => {
+					if (data.status != "success") {
+						Notify('error', data.message, 'Auth');
+						return;
+					}
+					closeOtpPopup();
+					Notify('success', 'You have successfully activated your account!', 'Auth');
+					$('#sign-in-form').submit()
+				})
+			} else {
+				Notify('error', 'Invalid OTP', 'Auth');
+			}
+			e.preventDefault();
+		});
+	})
 }

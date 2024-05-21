@@ -1,5 +1,5 @@
 function API() {
-	return "https://clickviral-v2.onrender.com";
+	return "https://clickviral-backend.hardope.tech";
 	// return "http://localhost:5000"
 }
 
