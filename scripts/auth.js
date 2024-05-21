@@ -283,3 +283,99 @@ function InitiateActivateAccount(email){
 		});
 	})
 }
+
+function openPasswordPopup() {
+	$('#password-popup').fadeIn();
+}
+
+function closePasswordPopup() {
+	$('#password-popup').fadeOut();
+}
+
+function forgotPassword() {
+	openEmailPopup();
+
+	$('#email_popup_form').submit(function(e) {
+		const email = $('#email-input').val();
+		otp = ''
+		
+		fetch(`${API()}/user/send-reset-password-otp`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				email: email,
+			}),
+		})
+		.then((response) => response.json())
+		.then((data) => {
+			if (data.status != "success") {
+				Notify('error', data.message, 'Auth');
+				return;
+			}
+			Notify('info', 'Check your email for OTP to reset your password', 'Auth');
+			closeEmailPopup();
+			openOtpPopup();
+			$('#otp_popup_form').submit(function(e) {
+				const inputOtp = $('#otp-input').val();
+				if (inputOtp.length === 6 ){
+					otp = inputOtp;
+					fetch(`${API()}/user/verify-reset-password-otp`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							email: email,
+							otp: otp,
+						}),
+					})
+					.then((response) => response.json())
+					.then((data) => {
+						if (data.status != "success") {
+							Notify('error', data.message, 'Auth');
+							return;
+						}
+						closeOtpPopup();
+						openPasswordPopup();
+						$('#password_popup_form').submit(function(e) {
+							const password = $('#password-input').val();
+							const confirm_password = $('#confirm-password-input').val();
+							if (password != confirm_password) {
+								Notify('error', 'Passwords do not match', 'Auth');
+							} else {
+								fetch(`${API()}/user/reset-password`, {
+									method: "POST",
+									headers: {
+										"Content-Type": "application/json",
+									},
+									body: JSON.stringify({
+										email: email,
+										password: password,
+										otp: otp,
+									}),
+								})
+								.then((response) => response.json())
+								.then((data) => {
+									if (data.status != "success") {
+										Notify('error', data.message, 'Auth');
+										return;
+									}
+									closePasswordPopup();
+									Notify('success', 'You have successfully reset your password!', 'Auth');
+									Login(email, password);
+								})
+							}
+							e.preventDefault();
+						})
+					})
+				} else {
+					Notify('error', 'Invalid OTP', 'Auth');
+				}
+				e.preventDefault();
+			});
+		});
+		e.preventDefault();
+	})
+}

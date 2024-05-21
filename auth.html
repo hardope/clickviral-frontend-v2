@@ -22,6 +22,7 @@
 						<i class="fas fa-lock"></i>
 						<input type="password" class="password" placeholder="Password" required />
 					</div>
+					<button class="btn transparent" id="forgot-password" onclick="forgotPassword()">Forgot Password</button>
 					<input type="submit" value="Login" class="btn solid" />
 				</form>
 
@@ -82,7 +83,7 @@
 		<div class="popup-content">
 			<form id="otp_popup_form">
 				<h2>Enter OTP</h2>
-				<input type="text" id="otp-input" placeholder="Enter 6-digit OTP" maxlength="6" />
+				<input type="text" id="otp-input" placeholder="Enter 6-digit OTP" maxlength="6" required />
 				<button id="otp-submit-btn">Submit</button>
 			</form>
 		</div>
@@ -91,9 +92,20 @@
 	<div id="email-popup" class="popup">
 		<div class="popup-content">	
 			<form id="email_popup_form">
-				<h2>Enter Email</h2>
-				<input type="email" id="email-input" placeholder="Enter Email" maxlength="6" />
+				<h2>Account Email</h2>
+				<input type="email" id="email-input" placeholder="Enter Email" required/>
 				<button id="email-submit-btn">Submit</button>
+			</form>
+		</div>
+	</div>
+
+	<div id="password-popup" class="popup">
+		<div class="popup-content">	
+			<form id="password_popup_form">
+				<h2>Reset Password</h2>
+				<input type="password" id="password-input" placeholder="Enter password" required />
+				<input type="password" id="confirm-password-input" placeholder="Confirm password" required />
+				<button id="password-submit-btn">Submit</button>
 			</form>
 		</div>
 	</div>
