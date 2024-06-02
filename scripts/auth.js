@@ -321,7 +321,7 @@ function forgotPassword() {
 				const inputOtp = $('#otp-input').val();
 				if (inputOtp.length === 6 ){
 					otp = inputOtp;
-					fetch(`${API()}/user/verify-reset-password-otp`, {
+					fetch(`${API()}/user/verify-otp`, {
 						method: "POST",
 						headers: {
 							"Content-Type": "application/json",
@@ -329,6 +329,7 @@ function forgotPassword() {
 						body: JSON.stringify({
 							email: email,
 							otp: otp,
+							purpose: 'forgot-password'
 						}),
 					})
 					.then((response) => response.json())
