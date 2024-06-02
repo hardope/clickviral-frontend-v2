@@ -329,7 +329,7 @@ function forgotPassword() {
 						body: JSON.stringify({
 							email: email,
 							otp: otp,
-							purpose: 'forgot-password'
+							purpose: 'forgot_password'
 						}),
 					})
 					.then((response) => response.json())
