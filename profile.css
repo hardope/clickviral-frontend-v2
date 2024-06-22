@@ -1,0 +1,112 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body{
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+#cover {
+  position: relative;
+  height: 30vh; /* Adjusted height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-blend-mode: darken;
+  overflow: hidden; /* Ensures the profile card does not extend beyond the cover */
+}
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  width: 95%;
+  background: linear-gradient(to bottom, rgba(36, 120, 230, 0.5), rgba(255, 255, 255, 0.8) 20%, rgba(68, 129, 235, 0.8));
+  border-radius: 24px;
+  padding: 10px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  position: absolute; /* Positioned absolutely within the cover */
+  top: 30%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Fine-tune positioning */
+  overflow: hidden; /* Ensure the content stays within the card */
+}
+.image {
+  position: relative;
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  padding: 3px;
+  background-color: #4481eb;
+}
+.image .profile-image {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+.profile-card .texts {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #333;
+}
+
+.texts .name {
+  font-size: 22px;
+  font-weight: 500;
+}
+.texts .skill {
+  font-size: 15px;
+  font-weight: 400;
+}
+.profile-card .socialbuttons {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.socialbuttons .link {
+  border-radius: 50px;
+  display: flex;
+  font-size: 18px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 5px;
+  background-color: #4481eb;
+  color: white;
+  padding: 3px;
+  text-decoration: none;
+  width: 30px;
+  height: 30px;
+}
+
+.profile-card .buttons {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.buttons button {
+  border: none;
+  color: white;
+  font-size: 14px;
+  border-radius: 20px;
+  margin: 0 10px;
+  padding: 8px 24px;
+  background-color: #4481eb;;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.buttons .button:hover {
+  background-color: grey;
+}
