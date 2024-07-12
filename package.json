@@ -10,11 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/toastr": "^2.1.43",
     "axios": "^1.7.2",
     "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.24.1"
+    "react-router-dom": "^6.24.1",
+    "toastr": "^2.1.4"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

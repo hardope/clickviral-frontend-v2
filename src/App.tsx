@@ -9,18 +9,13 @@ function Logout() {
 	return <Navigate to="/auth" />;
 }
 
-function AuthAndLogout() {
-	localStorage.clear();
-	return <Auth />;
-}
-
 function App() {
 
 	return (
 		<Router>
 			<Routes>
 				<Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-				<Route path="/auth" element={<AuthAndLogout />} />
+				<Route path="/auth" element={<Auth />} />
 				<Route path="/logout" element={<Logout />} />
 				<Route path="*" element={<NotFound />} />
 			</Routes>

@@ -11,18 +11,17 @@ interface Props {
 
 function ProtectedRoute({ children }: Props) {
 	const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+	const [isLoading, setIsLoading] = useState(true); // New loading state
 
 	useEffect(() => {
-		auth().catch(() => setIsAuthenticated(false));
-	}, [])
+		auth().then(() => setIsLoading(false)); // Handle loading after auth
+	}, []);
 
 	const refresToken = async () => {
 		try {
 			const refreshToken = localStorage.getItem(REFRESH_TOKEN);
-			const response = await api.post("/user/refresh/", {
-				refreshToken: refreshToken,
-			});
-			if (response.status == 200) {
+			const response = await api.post("/user/refresh/", { refreshToken });
+			if (response.status === 200) {
 				const accessToken = response.data.token;
 				localStorage.setItem(ACCESS_TOKEN, accessToken);
 				setIsAuthenticated(true);
@@ -32,7 +31,7 @@ function ProtectedRoute({ children }: Props) {
 		} catch (error) {
 			setIsAuthenticated(false);
 		}
-	}
+	};
 
 	const auth = async () => {
 		const accessToken = localStorage.getItem(ACCESS_TOKEN);
@@ -45,18 +44,16 @@ function ProtectedRoute({ children }: Props) {
 		const now = Date.now() / 1000;
 		if (exp - now < 60) {
 			await refresToken();
-			return;
 		} else {
 			setIsAuthenticated(true);
 		}
-	}
+	};
 
-	if (isAuthenticated != null) return <div className="loader-container"><span id="loader"></span></div>;
-	
-	if (!isAuthenticated) return <Navigate to="/auth" />;
+	if (isLoading) return <div className="loader-container"><span className="loader"></span></div>; // Show loader while authenticating
+
+	if (!isAuthenticated) return <Navigate to="/logout" replace />; // Use replace to avoid history buildup
 
 	return children;
 }
 
 export default ProtectedRoute;
- 
