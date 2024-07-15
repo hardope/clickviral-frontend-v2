@@ -26,8 +26,9 @@ function ProtectedRoute({ children }: Props) {
 				localStorage.setItem(ACCESS_TOKEN, accessToken);
 				setIsAuthenticated(true);
 			} else {
+				console.log(response.data);
 				setIsAuthenticated(false);
-			}
+			}	
 		} catch (error) {
 			setIsAuthenticated(false);
 		}
