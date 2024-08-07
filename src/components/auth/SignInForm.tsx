@@ -32,6 +32,23 @@ const SignInForm = () => {
         setPassword(e.target.value);
     };
 
+    function sendActivationOTP(user_id: string) {
+        api.post(`/user/send-verification-email/${user_id}`, { email }).then((res) => {
+            try {
+                if (res.data.status != "success") {
+                    console.log(res.data);
+                    Notify("An error occurred", "error", "Error");
+                    setLoader(false);
+                }
+                Notify("Check your email for account activation", "info", "Info");
+            } catch {
+                console.log(res.data);
+                Notify("An error occurred", "error", "Error");
+                setLoader(false);
+            }
+        });
+    }
+
     const handleSignIn = (e: React.FormEvent) => {
         e.preventDefault();
         const signin = e;
@@ -132,23 +149,7 @@ const SignInForm = () => {
                             if (res.data.status == "success") {
                                 user_id = res.data.data;
 
-
-                                console.log("Sending verification email " + user_id);
-
-                                api.post(`/user/send-verification-email/${user_id}`, { email }).then((res) => {
-                                    try {
-                                        if (res.data.status != "success") {
-                                            console.log(res.data);
-                                            Notify("An error occurred", "error", "Error");
-                                            setLoader(false);
-                                        }
-                                        Notify("Check your email for account activation", "info", "Info");
-                                    } catch {
-                                        console.log(res.data);
-                                        Notify("An error occurred", "error", "Error");
-                                        setLoader(false);
-                                    }
-                                });
+                                sendActivationOTP(user_id);
 
                                 let maxKey = Math.max(...popups.map((popup: any) => popup.key));
                                 let activatePopup = (
