@@ -240,6 +240,163 @@ const SignInForm = () => {
 
     };
 
+    const forgotPassword = () => {
+        console.error("Forgot password");
+        
+        let maxKey = Math.max(...popups.map((popup: any) => popup.key));
+
+        let forgotPasswordPopup = (
+            <Popup
+                key={maxKey + 1}
+                title="Forgot Password"
+                inputs={[{ type: "email", name: "email", placeholder: "Email" }]}
+                submit="Reset"
+                onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target as HTMLFormElement);
+                    let email = formData.get("email") as string;
+                    if (!email) {
+                        Notify("Invalid email", "error", "Error");
+                        return;
+                    }
+                    setLoader(true);
+                    let req = api.post("/user/send-reset-password-otp", { email });
+                    req.then((res) => {
+                        try {
+                            if (res.data.status == "success") {
+                                Notify("Password reset link sent to email", "success", "Success");
+                                setLoader(false);
+                                let otp_popup = (
+                                    <Popup
+                                        key={maxKey + 2}
+                                        title="Enter OTP"
+                                        inputs={[{ type: "text", name: "otp", placeholder: "OTP" }]}
+                                        submit="Confirm OTP"
+                                        onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+                                            e.preventDefault();
+                                            const formData = new FormData(e.target as HTMLFormElement);
+                                            let otp = formData.get("otp") as string;
+                                            if (!otp || otp.length != 6) {
+                                                Notify("Invalid OTP", "error", "Error");
+                                                return;
+                                            }
+                                            setLoader(true);
+                                            let req = api.post("/user/verify-otp", { 
+                                                "email": email,
+                                                "otp": otp,
+                                                "purpose": "forgot_password",
+                                            });
+                                            req.then((res) => {
+                                                try {
+                                                    if (res.data.status == "success") {
+                                                        Notify("OTP verified", "success", "Success");
+                                                        setLoader(false);
+                                                        let resetPassword = (
+                                                            <Popup
+                                                                key={maxKey + 3}
+                                                                title="Reset Password"
+                                                                inputs={[
+                                                                    { type: "password", name: "password", placeholder: "New Password" },
+                                                                    { type: "password", name: "confirm_password", placeholder: "Confirm Password" },
+                                                                ]}
+                                                                submit="Reset Password"
+                                                                onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+                                                                    e.preventDefault();
+                                                                    const formData = new FormData(e.target as HTMLFormElement);
+                                                                    let password = formData.get("password") as string;
+                                                                    let confirm_password = formData.get("confirm_password") as string;
+                                                                    console.log(`password : ${password} confirm_password : ${confirm_password}`);
+                                                                    if (!password || !confirm_password || password != confirm_password) {
+                                                                        Notify("Passwords do not match", "error", "Error");
+                                                                        return;
+                                                                    }
+                                                                    setLoader(true);
+                                                                    let req = api.post("/user/reset-password", { email, password, otp });
+                                                                    req.then((res) => {
+                                                                        try {
+                                                                            if (res.data.status == "success") {
+                                                                                Notify("Password reset successful", "success", "Success");
+                                                                                setLoader(false);
+                                                                            } else {
+                                                                                console.log(res.data);
+                                                                                Notify(res.data.message, "error", "Error");
+                                                                                setLoader(false);
+                                                                            }
+                                                                        } catch {
+                                                                            console.log(res.data);
+                                                                            Notify("An error occurred", "error", "Error");
+                                                                            setLoader(false);
+                                                                        }
+                                                                    }).catch((err) => {
+                                                                        try {
+                                                                            const error = err.response.data;
+                                                                            console.log(error);
+                                                                            Notify(error.message, "error", "Error");
+                                                                        } catch {
+                                                                            console.log(err);
+                                                                            Notify("An error occurred", "error", "Error");
+                                                                        }
+                                                                        setLoader(false);
+                                                                    });
+                                                                }}
+                                                            />
+                                                        );
+                                                        setPopups([...popups, resetPassword]);
+                                                    } else {
+                                                        console.log(res.data);
+                                                        Notify(res.data.message, "error", "Error");
+                                                        setLoader(false);
+                                                    }
+                                                } catch {
+                                                    console.log(res.data);
+                                                    Notify("An error occurred", "error", "Error");
+                                                    setLoader(false);
+                                                }
+                                            }).catch((err) => {
+                                                try {
+                                                    const error = err.response.data;
+                                                    console.log(error);
+                                                    Notify(error.message, "error", "Error");
+                                                } catch {
+                                                    console.log(err);
+                                                    Notify("An error occurred", "error", "Error");
+                                                }
+                                                setLoader(false);
+                                            });
+                                        }}
+                                    />
+                                );
+                                setPopups([...popups, otp_popup ]);
+
+                            } else {
+                                console.log(res.data);
+                                Notify("An error occurred", "error", "Error");
+                                setLoader(false);
+                            }
+                        } catch {
+                            console.log(res.data);
+                            Notify("An error occurred", "error", "Error");
+                            setLoader(false);
+                        }
+                    }).catch((err) => {
+                        try {
+                            const error = err.response.data;
+                            console.log(error);
+                            Notify(error.message, "error", "Error");
+                        } catch {
+                            console.log(err);
+                            Notify("An error occurred", "error", "Error");
+                        }
+                        setLoader(false);
+                    });
+                }}
+            />
+        );
+
+        setPopups([...popups, forgotPasswordPopup]);
+    }
+
+
     return (
         <>
             {isAuthenticated && <Navigate to="/" replace />}
@@ -250,8 +407,9 @@ const SignInForm = () => {
                 <Input iconClass="fa-envelope" type="email" placeholder="Email" onChange={handleEmailChange} required={true} />
                 <Input iconClass="fa-lock" type="password" placeholder="Password" onChange={handlePasswordChange} required={true} />
                 <input type="submit" value="Login" className="btn solid" disabled={loader} />
-                <button className="btn transparent" id="forgot-password">Forgot Password</button>
+                <div className="btn transparent" id="forgot-password" onClick={forgotPassword}>Forgot Password</div>
             </form>
+            
         </>
     );
 };

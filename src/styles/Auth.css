@@ -8,7 +8,6 @@
 }
 
 #forgot-password {
-  display: inline-block;
   color: #3498db;
   background: none;
   border: none;
@@ -19,7 +18,8 @@
   cursor: pointer;
   text-decoration: none;
   padding: 0;
-  margin-right: -40%; /* Align to the right */
+  margin-left: 50%;
+  /* margin-top: -100px; */
   display: block;
   transition: color 0.3s ease;
 }
