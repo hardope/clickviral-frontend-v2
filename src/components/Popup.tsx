@@ -2,13 +2,11 @@ import "../styles/Popup.css"
 
 interface Props {
     title: string;
-    inputs: [
-        {
-            type: string;
-            name: string;
-            placeholder: string;
-        }
-    ],
+    inputs: Array<{
+        type: string;
+        name: string;
+        placeholder: string;
+    }>,
     submit: string;
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
