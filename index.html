@@ -1,78 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>ClickViral</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="index.css">
-    <link rel="icon" href="images/icon.png" type="image/x-icon">
-</head>
-<body>
-    <nav>
-        <div class="nav" id="nav">
-            <div class="other-nav-body">
-                <span class="logo"><img src="images/icon.png" alt="Logo" id="logo"></span>
-            </div>
-            <div id="nav-menu">
-                <span class="nav-items" id="home"><img src="images/home.svg" class="" alt="Home"></span>
-                <span class="nav-items" id="chat"><img src="images/chat.svg" alt="Chat"></span>
-                <span class="nav-items" id="profile"><img src="images/profile.svg" alt="Chat"></span>
-                <span class="nav-items" id="notification"><img src="images/notification.svg" alt="Chat"></span>
-            </div>
-            <div class="other-nav-body">
-                <form action="#" class="search-form" id="search-form">
-                    <input type="text" name="search" id="search" placeholder="Search">
-                </form>
-            </div>
-        </div>
-    </nav>
-
-    <nav id="mobile-top-bar">
-        <span id="mobile-logo"><img src="images/icon.png" alt="Icon"></span>
-        <div>
-            <span id="nav-search-icon"><img src="images/search.svg" alt="Search"></span>
-            <span class="menu-icon" id="nav-menu-icon"><img src="images/menu.svg" alt="Menu"></span>
-        </div>
-    </nav>
-
-    <aside id="sidebar">
-        
-        <div id="sidebar-options">
-            <span id="close-settings">
-                <img src="images/back.svg" id="sidebar-return" alt="Return">
-            </span>
-            <div class="sidebar-option"><img src="images/profile.svg" alt="Return"> <span>Account</span></div>
-            <div class="sidebar-option"><img src="images/lock.svg" alt="Return"> <span>Privacy</span></div>
-            <div class="sidebar-option"><img src="images/shield.svg" alt="Return"> <span>Security</span></div>
-            <div class="sidebar-option"><img src="images/info.svg" alt="Return"> <span>Help</span></div>
-            <div class="sidebar-option"><img src="images/power.svg" alt="Return" onclick="LogOut();"> <span>Logout</span></div>
-        </div>
-
-        <div id="sidebar-user-profile">
-            <img src="images/icon.png" alt="User Profile Photo" id="sidebar-profile-photo">
-            <div id="sidebar-user-info">
-                <span id="sidebar-fullname">Full Name</span>
-            </div>
-        </div>
-    </aside>
-
-    <main id="main">
-        <div id="loader" class="loader"></div>
-        <div id="content">
-            <!-- Content will be loaded here -->
-        </div>
-    </main>
-    
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-	<script src="scripts/notify.js"></script>
-	<script src="scripts/api.js"></script>
-    <script src="scripts/loadpage.js"></script>
-    <script src="index.js"></script>
-    <script src="scripts/index_api.js"></script>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
