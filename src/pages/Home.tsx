@@ -5,7 +5,6 @@ const Home = () => {
 
 	const [userData, setUserData] = useState<any>(null);
 
-
 	useEffect(() => {
 		const user = () => {
 			api.get("/user/me")
