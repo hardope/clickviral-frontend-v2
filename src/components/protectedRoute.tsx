@@ -17,13 +17,19 @@ function ProtectedRoute({ children }: Props) {
 		auth().then(() => setIsLoading(false)); // Handle loading after auth
 	}, []);
 
-	const refresToken = async () => {
+	const refreshToken = async () => {
 		try {
+			// console.log("Attempting to rereesh token")
 			const refreshToken = localStorage.getItem(REFRESH_TOKEN);
+			// console.log("Refresh token: ", refreshToken);
 			const response = await api.post("/user/refresh/", { refreshToken });
 			if (response.status === 200) {
+
 				const accessToken = response.data.token;
+
+				// console.log('Acess token ' + accessToken);
 				localStorage.setItem(ACCESS_TOKEN, accessToken);
+				// console.log("Access token refreshed");
 				setIsAuthenticated(true);
 			} else {
 				console.log(response.data);
@@ -35,6 +41,7 @@ function ProtectedRoute({ children }: Props) {
 	};
 
 	const auth = async () => {
+		// console.log("Authenticating")
 		const accessToken = localStorage.getItem(ACCESS_TOKEN);
 		if (!accessToken) {
 			setIsAuthenticated(false);
@@ -42,12 +49,18 @@ function ProtectedRoute({ children }: Props) {
 		}
 
 		const exp = jwtDecode(accessToken).exp || 0;
-		const now = Date.now() / 1000;
-		if (exp - now < 60) {
-			await refresToken();
+		// console.log("Access token expires at: ", new Date(exp * 1000));
+
+		const now = Math.floor(Date.now() / 1000); // Convert to seconds
+		// console.log("Current time: ", now);
+
+		// Check if token expires within the next hour (3600 seconds)
+		if (exp - now < 3600) {
+			await refreshToken();
 		} else {
 			setIsAuthenticated(true);
 		}
+
 	};
 
 	if (isLoading) return <div className="loader-container"><span className="loader"></span></div>; // Show loader while authenticating
