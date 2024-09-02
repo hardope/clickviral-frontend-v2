@@ -10,7 +10,7 @@ import Notifications from "./pages/Notifications"
 
 function Logout() {
 	console.log("Logging out");
-	// localStorage.clear();
+	localStorage.clear();
 	return <Navigate to="/auth" />;
 }
 
