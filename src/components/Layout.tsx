@@ -56,7 +56,7 @@ const Layout = ({ children }: LayoutProps) => {
               src="/images/profile.svg" 
               alt="Profile" 
               className="icon nav-icon" 
-              onClick={() => navigate('/profile')} 
+              onClick={() => navigate('/profile/hardope')} 
             />
             <img 
               src="/images/notification.svg" 
@@ -96,7 +96,7 @@ const Layout = ({ children }: LayoutProps) => {
           <span>Menu</span>
         </div>
         <div className="sidebar-content">
-          <div className="sidebar-item" onClick={() => navigate('/profile')}>
+          <div className="sidebar-item" onClick={() => navigate('/profile/hardope')}>
             <img 
               src="/images/profile.svg" 
               alt="Account" 
@@ -160,7 +160,7 @@ const Layout = ({ children }: LayoutProps) => {
             src="/images/profile.svg" 
             alt="Profile" 
             className="icon nav-icon" 
-            onClick={() => navigate('/profile')} 
+            onClick={() => navigate('/profile/hardope')} 
           />
           <img 
             src="/images/notification.svg" 

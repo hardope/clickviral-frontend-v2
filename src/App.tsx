@@ -23,7 +23,7 @@ function App() {
 				<Route path="/auth" element={<Auth />} />
 				<Route path="/logout" element={<Logout />} />
 				<Route path="*" element={<NotFound />} />
-				<Route path="profile" element={<Layout><Profile /></Layout>} />
+				<Route path="profile/:username" element={<Layout><Profile /></Layout>} />
 				<Route path="chats" element={<Layout><Chat /></Layout>} />
 				<Route path="notifications" element={<Layout><Notifications /></Layout>} />
 			</Routes>
