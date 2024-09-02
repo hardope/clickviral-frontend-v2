@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import api from "../api";
-import Layout from "../components/Layout";
 
 const Home = () => {
 
@@ -23,28 +22,26 @@ const Home = () => {
 
 	return (
 		<>
-			<Layout>
-				{
-					userData ? (
-						<div style={
-							{
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "center"
-							}
-						}>
-							<p>Welcome {userData.email}</p>
-							<p>Your ID is {userData.id}</p>
-						</div>
-					) : (
-						<div>
-							<p>Welcome</p>
-							<p>Loading...</p>
-						</div>
-					)
-				}
-				<h1>Home</h1>
-			</Layout>
+			{
+				userData ? (
+					<div style={
+						{
+							display: "flex",
+							flexDirection: "column",
+							alignItems: "center"
+						}
+					}>
+						<p>Welcome {userData.email}</p>
+						<p>Your ID is {userData.id}</p>
+					</div>
+				) : (
+					<div>
+						<p>Welcome</p>
+						<p>Loading...</p>
+					</div>
+				)
+			}
+			<h1>Home</h1>
 		</>
 	)
 }

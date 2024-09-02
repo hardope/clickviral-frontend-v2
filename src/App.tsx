@@ -3,9 +3,14 @@ import ProtectedRoute from "./components/protectedRoute"
 import Home from "./pages/Home"
 import Auth from "./pages/Auth"
 import NotFound from "./pages/NotFound"
+import Profile from "./pages/Profile"
+import Layout from "./components/Layout"
+import Chat from "./pages/Chat"
+import Notifications from "./pages/Notifications"
 
 function Logout() {
-	localStorage.clear();
+	console.log("Logging out");
+	// localStorage.clear();
 	return <Navigate to="/auth" />;
 }
 
@@ -14,10 +19,13 @@ function App() {
 	return (
 		<Router>
 			<Routes>
-				<Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+				<Route path="/" element={<ProtectedRoute><Layout><Home /></Layout></ProtectedRoute>} />
 				<Route path="/auth" element={<Auth />} />
 				<Route path="/logout" element={<Logout />} />
 				<Route path="*" element={<NotFound />} />
+				<Route path="profile" element={<Layout><Profile /></Layout>} />
+				<Route path="chats" element={<Layout><Chat /></Layout>} />
+				<Route path="notifications" element={<Layout><Notifications /></Layout>} />
 			</Routes>
 		</Router>
 	)
