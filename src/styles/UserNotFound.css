@@ -1,0 +1,59 @@
+.user-not-found-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align items to the start to move closer to the top */
+    height: 100vh;
+    padding: 1rem; /* Adjust padding for mobile screens */
+    background-color: var(--background-color); /* Adapt to dark/light mode */
+}
+
+@media (min-width: 1024px) {
+    /* On large screens, shift the component left by adjusting padding-right */
+    .user-not-found-container {
+        padding-right: 250px; /* Sidebar width on larger screens */
+    }
+}
+
+.user-not-found-content {
+    text-align: center;
+    padding: 2rem;
+    border: 1px solid #04befe;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px; /* Adjust as needed */
+    width: 100%; /* Ensure it takes full width on mobile */
+    margin-top: 2rem; /* Add margin to move it closer to the top */
+}
+
+h1 {
+    font-size: 2rem;
+    color: var(--text-color); /* Adapt to dark/light mode */
+}
+
+p {
+    color: var(--text-muted);
+}
+
+.not-found-icon {
+    margin: 1rem 0;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.go-back-btn {
+    background-color: #04befe;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.go-back-btn:hover {
+    background-color: #028cbb;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

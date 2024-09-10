@@ -1,15 +1,17 @@
-// src/components/Profile.tsx
-// import React from 'react';
 import Loader from '../components/Loader';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../styles/Profile.css';
 import { useEffect, useState } from 'react';
 import api from '../api';
+import UserNotFound from '../components/UserNotFound';
+import profileImage from '../assets/images/profile.svg';
+import coverImage from '../assets/images/cover_default.png';
 
 const Profile = () => {
 
     const [loading, setIsLoading] = useState(true);
     const [user, setUser] = useState<any>({});
+    const [notFound, setNotFound] = useState(false);
 
     const navigate = useNavigate();
 
@@ -21,11 +23,20 @@ const Profile = () => {
             try {
                 const response = await api.get(`/user/username/${username}`);
                 console.log('User data: ', response.data.data);
+                let userdata = response.data.data;
+                if (userdata.profileImage == '') {
+                    userdata.profileImage = profileImage;
+                }
+                if (userdata.coverImage == '') {
+                    userdata.coverImage = coverImage;
+                }
                 setUser(response.data.data);
                 console.log('User: ', user);
                 setIsLoading(false);
-            } catch (error) {
-                console.error('Error fetching user data: ', error);
+            } catch (error: any) {
+                if (error.response.status === 404) {
+                    setNotFound(true);
+                }
                 setIsLoading(false);
             }
         };
@@ -42,7 +53,7 @@ const Profile = () => {
     return (
         <div>
             {loading && <Loader />}
-            {!loading && (
+            {!loading && !notFound && (
                 <div className="profile-page">
                 
                 <div className="cover-image">
@@ -61,6 +72,7 @@ const Profile = () => {
                 </div>
             </div>
             )}
+                {notFound && <UserNotFound />}
         </div>
     );
 };
