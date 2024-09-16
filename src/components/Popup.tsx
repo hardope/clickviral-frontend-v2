@@ -12,6 +12,7 @@ interface Props {
 }
 
 const Popup = ({title, inputs, submit, onSubmit}: Props) => {
+    // const [isOpen, setIsopen]
     return (
         <>
             <div className="popup">
