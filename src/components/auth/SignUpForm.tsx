@@ -3,7 +3,7 @@ import Input from "./AuthInput";
 import Loader from "../Loader";
 import api from "../../api";
 import Notify from "../../utils/Notify";
-import Popup from "../Popup";
+import {Popup, closePopup} from "../Popup";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../environment";
 
 const SignUpForm = () => {
@@ -76,6 +76,7 @@ const SignUpForm = () => {
                             title="Enter OTP"
                             inputs={[{ type: "text", name: "otp", placeholder: "OTP" }]}
                             submit="Verify"
+                            onClose={() => closePopup(maxKey+1, setPopups, popups)}
                             onSubmit={(e: React.FormEvent) => {
                                 e.preventDefault();
                                 setLoader(true);

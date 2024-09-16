@@ -5,7 +5,7 @@ import Loader from "../Loader";
 import api from "../../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../environment";
 import { Navigate } from "react-router-dom";
-import Popup from "../Popup";
+import {Popup, closePopup} from "../Popup";
 
 const SignInForm = () => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -66,6 +66,7 @@ const SignInForm = () => {
                             title="Enter OTP"
                             inputs={[{ type: "text", name: "otp", placeholder: "OTP" }]}
                             submit="Verify"
+                            onClose={() => closePopup(maxKey+1, setPopups, popups)}
                             onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                                 e.preventDefault();
                                 console.log("OTP verification");
@@ -158,6 +159,7 @@ const SignInForm = () => {
                                         title="Activate Account"
                                         inputs={[{ type: "text", name: "otp", placeholder: "OTP" }]}
                                         submit="Activate"
+                                        onClose={() => closePopup(maxKey+1, setPopups, popups)}
                                         onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                                             e.preventDefault();
                                             const formData = new FormData(e.target as HTMLFormElement);
@@ -241,7 +243,6 @@ const SignInForm = () => {
     };
 
     const forgotPassword = () => {
-        console.error("Forgot password");
         
         let maxKey = Math.max(...popups.map((popup: any) => popup.key));
 
@@ -251,6 +252,11 @@ const SignInForm = () => {
                 title="Forgot Password"
                 inputs={[{ type: "email", name: "email", placeholder: "Email" }]}
                 submit="Reset"
+                onClose={(
+                    () => {
+                        setPopups(popups.filter((popup: any) => popup.key !== maxKey + 1));
+                    }
+                )}
                 onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                     e.preventDefault();
                     const formData = new FormData(e.target as HTMLFormElement);
@@ -272,6 +278,7 @@ const SignInForm = () => {
                                         title="Enter OTP"
                                         inputs={[{ type: "text", name: "otp", placeholder: "OTP" }]}
                                         submit="Confirm OTP"
+                                        onClose={() => closePopup(maxKey+1, setPopups, popups)}
                                         onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                                             e.preventDefault();
                                             const formData = new FormData(e.target as HTMLFormElement);
@@ -300,6 +307,11 @@ const SignInForm = () => {
                                                                     { type: "password", name: "confirm_password", placeholder: "Confirm Password" },
                                                                 ]}
                                                                 submit="Reset Password"
+                                                                onClose={(
+                                                                    () => {
+                                                                        setPopups(popups.filter((popup: any) => popup.key !== maxKey + 1));
+                                                                    }
+                                                                )}
                                                                 onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                                                                     e.preventDefault();
                                                                     const formData = new FormData(e.target as HTMLFormElement);
