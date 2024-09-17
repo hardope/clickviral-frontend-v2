@@ -22,7 +22,6 @@ const Profile = () => {
         const fetchUser = async () => {
             try {
                 const response = await api.get(`/user/username/${username}`);
-                console.log('User data: ', response.data.data);
                 let userdata = response.data.data;
                 if (userdata.profileImage == '') {
                     userdata.profileImage = profileImage;
@@ -31,7 +30,6 @@ const Profile = () => {
                     userdata.coverImage = coverImage;
                 }
                 setUser(response.data.data);
-                console.log('User: ', user);
                 setIsLoading(false);
             } catch (error: any) {
                 if (error.response.status === 404) {
