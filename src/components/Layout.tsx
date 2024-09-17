@@ -68,7 +68,7 @@ const Layout = ({ children }: LayoutProps) => {
 			<input 
 				type="text" 
 				className={`search-bar ${isSearchActive ? 'active' : ''}`} 
-				placeholder="Search..." 
+				placeholder="Search..."
 			/>
 			</div>
 			<div className="navbar-right">
