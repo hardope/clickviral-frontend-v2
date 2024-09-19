@@ -17,17 +17,19 @@ const Layout = ({ children }: LayoutProps) => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const user = () => {
+		const user = localStorage.getItem('user');
+		if (user) {
+			setUserData(JSON.parse(user));
+		} else {
 			api.get("/user/me")
 				.then((res) => {
 					setUserData(res.data.data);
+					localStorage.setItem('user', JSON.stringify(res.data.data));
 				})
 				.catch((err) => {
 					console.log(err);
 				});
-		};
-
-		user();
+		}
 	}, []);
 
 	// Function to toggle the sidebar

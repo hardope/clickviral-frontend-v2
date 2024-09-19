@@ -16,6 +16,7 @@ const Profile = () => {
     const navigate = useNavigate();
 
     const { username } = useParams<{ username: string }>();
+    const authUser = JSON.parse(localStorage.getItem('user') || '{}');
 
     // Fetch user data
     useEffect(() => {
@@ -48,6 +49,10 @@ const Profile = () => {
         navigate('/messaging');
     };
 
+    const handleEditProfileClick = () => {
+        navigate('/edit-profile');
+    }
+
     return (
         <div>
             {loading && <Loader />}
@@ -64,9 +69,15 @@ const Profile = () => {
                     <h1 className="profile-name">{`${user.first_name} ${user.last_name}`}</h1>
                     <p className="username">@{user.username}</p>
                     <p className="bio">{user.bio}</p>
-                    <button className="message-button" onClick={handleMessageClick}>
-                    Message
-                    </button>
+                    { authUser.id !== user.id ? 
+                        <button className="message-button" onClick={handleMessageClick}>
+                        Message
+                        </button>
+                        :
+                        <button className="message-button" onClick={handleEditProfileClick}>
+                        Edit Profile
+                        </button>
+                    }
                 </div>
             </div>
             )}

@@ -123,6 +123,7 @@ const SignInForm = () => {
                     const data = res.data.data;
                     localStorage.setItem(ACCESS_TOKEN, data.token);
                     localStorage.setItem(REFRESH_TOKEN, data.refreshToken);
+                    localStorage.setItem("user", JSON.stringify(data.user));
                     Notify("Login successful", "success", "Success");
                     IsAuthenticated();
                     setLoader(false);
