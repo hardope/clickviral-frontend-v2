@@ -50,7 +50,7 @@ const Profile = () => {
     };
 
     const handleEditProfileClick = () => {
-        navigate('/edit-profile');
+        navigate('/profile/edit');
     }
 
     return (

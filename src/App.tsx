@@ -7,6 +7,7 @@ import Profile from "./pages/Profile"
 import Layout from "./components/Layout"
 import Chat from "./pages/Chat"
 import Notifications from "./pages/Notifications"
+import EditProfile from "./pages/EditProfile"
 
 function Logout() {
 	console.log("Logging out");
@@ -27,6 +28,7 @@ function App() {
 				<Route path="profile/:username" element={<Layout><Profile /></Layout>} />
 				<Route path="chats" element={<Layout><Chat /></Layout>} />
 				<Route path="notifications" element={<Layout><Notifications /></Layout>} />
+				<Route path="profile/edit" element={<ProtectedRoute><Layout><EditProfile /></Layout></ProtectedRoute>} />
 			</Routes>
 		</Router>
 	)

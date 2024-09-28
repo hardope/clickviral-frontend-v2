@@ -1,0 +1,173 @@
+/* Main container */
+.edit-profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+  margin: 0 auto;
+  margin-top: -37px; /* Center the component */
+}
+
+/* Cover Image */
+.images-section {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.images-section img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Profile Image */
+.profile-image {
+  position: absolute;
+  top: 140px; /* Adjust based on cover image height and profile-details margin */
+  border: 5px solid var(--light-bg-color);
+  border-radius: 50%;
+  overflow: hidden;
+  width: 120px;
+  height: 120px;
+  background-color: var(--light-bg-color);
+  transition: border-color 0.3s;
+}
+
+.layout.dark-mode .profile-image {
+  border-color: var(--dark-bg-color);
+}
+
+.profile-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Edit Fields */
+.edit-fields {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 80px; /* Space for the profile image */
+  padding: 20px;
+  border: 2px solid var(--primary-color);
+  border-radius: 10px;
+  background-color: var(--light-bg-color);
+  color: var(--light-text-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.layout.dark-mode .edit-fields {
+  background-color: var(--dark-bg-color);
+  color: var(--dark-text-color);
+}
+
+/* Input Fields */
+.edit-fields input,
+.edit-fields textarea {
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid var(--primary-color); /* Use a light gray for a subtle border */
+    border-radius: 3px; /* Reduced border radius */
+    background-color: transparent;
+    color: inherit;
+}
+
+.edit-fields input:focus,
+.edit-fields textarea:focus {
+    border-color: var(--primary-color); /* Highlight border on focus */
+    outline: none;
+}
+
+/* Reset Buttons */
+.reset-buttons {
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.reset-buttons button {
+  padding: 10px 20px;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.reset-buttons button:hover {
+  background-color: darken(var(--primary-color), 10%);
+}
+
+.layout.dark-mode .reset-buttons button {
+  color: var(--dark-text-color);
+}
+
+/* Save Profile Button */
+.save-profile {
+  margin-bottom: 20px;
+}
+
+.save-profile button {
+  padding: 12px 30px;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.save-profile button:hover {
+  background-color: darken(var(--primary-color), 10%);
+}
+
+/* Responsive adjustments for smaller screens */
+@media screen and (max-width: 768px) {
+  .images-section {
+    height: 150px;
+  }
+  
+  .profile-image {
+    width: 100px;
+    height: 100px;
+    top: 120px;
+  }
+
+  .edit-fields {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .edit-fields input,
+  .edit-fields textarea {
+    font-size: 14px;
+  }
+
+  .reset-buttons {
+    flex-direction: column;
+  }
+
+  .save-profile button {
+    width: 100%;
+    font-size: 16px;
+  }
+}
+
+/* Center the edit profile page on wide screens */
+@media screen and (min-width: 769px) {
+  .edit-profile-container {
+    max-width: calc(100% - 300px); /* Adjust based on sidebar width */
+    margin-left: 0;
+    margin-right: auto;
+  }
+}
