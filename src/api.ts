@@ -2,7 +2,7 @@ import axios from 'axios';
 import { ACCESS_TOKEN } from './environment';
 
 export const api = axios.create({
-	baseURL: 'http://c-backend.hardope.tech/',
+	baseURL: 'https://c-backend.hardope.tech/',
 	headers: {
 		'Content-Type': 'application/json',
 	},
