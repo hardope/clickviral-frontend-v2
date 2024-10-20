@@ -22,13 +22,11 @@ function ProtectedRoute({ children }: Props) {
 		try {
 			console.log("Attempting to rereesh token")
 			const refreshToken = localStorage.getItem(REFRESH_TOKEN);
-			console.log("Refresh token: ", refreshToken);
 			const response = await api.post("/user/refresh/", { refreshToken });
 			if (response.status === 200) {
 
-				const accessToken = response.data.token;
+				const accessToken = response.data.data.token;
 
-				console.log('Acess token ' + accessToken);
 				localStorage.setItem(ACCESS_TOKEN, accessToken);
 				console.log("Access token refreshed");
 				setIsAuthenticated(true);
