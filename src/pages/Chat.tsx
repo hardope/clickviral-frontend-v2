@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import '../styles/Chat.css';
 import back from '../assets/images/back.svg'
 
