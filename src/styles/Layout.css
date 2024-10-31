@@ -133,7 +133,7 @@ body {
   top: 0;
   margin-top: 55px;
   right: -100%;
-  width: 300px;
+  width: 30%;
   height: 100%;
   background-color: inherit;
   border-left: 2px solid var(--primary-color);
@@ -271,7 +271,8 @@ body {
 @media screen and (min-width: 769px) {
   .sidebar {
     right: 0; /* Show sidebar by default on widescreens */
-    width: 300px;
+    width: 25%;
+    max-width: 300px;
     margin-top: -5px !important;
   }
 
@@ -301,7 +302,7 @@ body {
   .nav-icons {
     display: flex;
     justify-content: center;
-  }
+  } 
 
   .navbar-center {
     position: absolute;
