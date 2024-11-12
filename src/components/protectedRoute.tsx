@@ -20,9 +20,11 @@ function ProtectedRoute({ children }: Props) {
 
 	const refreshToken = async () => {
 		try {
-			console.log("Attempting to rereesh token")
+			console.log("Attempting to reresh token")
 			const refreshToken = localStorage.getItem(REFRESH_TOKEN);
 			const response = await api.post("/user/refresh/", { refreshToken });
+			console.log(response)
+			console.log(response.status)
 			if (response.status === 200) {
 
 				const accessToken = response.data.data.token;
@@ -31,10 +33,12 @@ function ProtectedRoute({ children }: Props) {
 				console.log("Access token refreshed");
 				setIsAuthenticated(true);
 			} else {
-				// console.log(response.data);
+				console.log(response.data);
 				setIsAuthenticated(false);
 			}	
 		} catch (error) {
+			console.log('Refresh token expired');
+			setCheckedAuth(true);
 			setIsAuthenticated(false);
 		}
 	};
