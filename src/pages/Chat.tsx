@@ -40,8 +40,9 @@ const Chat = () => {
 
 	const handleSendMessage = () => {
 		if (message.trim()) {
-		// Logic to send the message
-		setMessage(''); // Clear the input after sending
+			// Logic to send the message
+			console.log(message);
+			setMessage(''); // Clear the input after sending
 		}
 	};
 
@@ -71,9 +72,9 @@ const Chat = () => {
 		{selectedChat && (
 			<div className="chat-popup">
 				<div className="chat-header">
-					<span>
+					<span className='chat-header-info'>
 						<img src={selectedChat.profilePic} alt={`${selectedChat.firstName} ${selectedChat.lastName}`} className="profile-pic" />
-						<span id="names">{selectedChat.firstName} {selectedChat.lastName}</span>
+						<span className="names">{selectedChat.firstName} {selectedChat.lastName}</span>
 					</span>
 					<img src={back} alt="Close Chat" className="close-chat" onClick={handleCloseChat} />
 				</div>
@@ -81,6 +82,26 @@ const Chat = () => {
 					<div className="message sent">Hello!</div>
 					<div className="message received">Hi, how are you?</div>
 					<div className="message sent">I’m good, thanks!</div>
+					<div className="message sent">Hello!</div>
+					<div className="message received">Hi, how are you?</div>
+					<div className="message sent">I’m good, thanks!</div>
+					<div className="message sent">Hello!</div>
+					<div className="message received">Hi, how are you?</div>
+					<div className="message sent">I’m good, thanks!</div>
+					<div className="message sent">Hello!</div>
+					<div className="message received">Hi, how are you?</div>
+					<div className="message sent">I’m good, thanks!</div>
+					<div className="message sent">Hello!</div>
+					<div className="message received">Hi, how are you?</div>
+					<div className="message sent">I’m good, thanks!</div>
+					<div className="message sent">Hello!</div>
+					<div className="message received">Hi, how are you?</div>
+					<div className="message sent">I’m good, thanks!</div>
+					<div className="message sent">Hello!</div>
+					<div className="message received">Hi, how are you?</div>
+					<div className="message sent">
+						Lorem ipsum, dolor sit amet consectetur adipisicing elit. Odio, reprehenderit consequuntur quod hic laudantium consectetur cumque corporis maxime molestiae nam vero beatae, eos in sed, ea quam saepe! Maxime, quaerat.
+					</div>
 				</div>
 
 				{/* Message Input Field */}
