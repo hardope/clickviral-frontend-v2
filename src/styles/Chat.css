@@ -1,4 +1,6 @@
 /* ChatPage.css */
+
+/* General Layout */
 .chat-page {
   display: flex;
   width: 100%;
@@ -12,15 +14,9 @@
   background-color: var(--dark-bg-color);
 }
 
-.profile-pic {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 15px;
-}
-
+/* Chat List */
 .chat-list {
-  width: 19vw;
+  width: 20vw;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -28,9 +24,7 @@
 }
 
 .chat-item {
-  padding-bottom: 8px;
-  padding-top: 8px;
-  padding-right: 3px;
+  padding: 8px;
   display: flex;
   cursor: pointer;
   background-color: var(--light-bg-color);
@@ -38,12 +32,20 @@
 }
 
 .chat-item:hover {
-  background-color: var(--primary-color-light); /* New hover color */
+  background-color: var(--primary-color-light);
 }
 
 .layout.dark-mode .chat-item {
   background-color: var(--dark-bg-color);
   color: var(--dark-text-color);
+}
+
+/* Profile Image and Name */
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 15px;
 }
 
 .chat-info {
@@ -52,7 +54,7 @@
 }
 
 .chat-name {
-  color: var(black  );
+  color: var(--text-color);
 }
 
 .layout.dark-mode .chat-name {
@@ -75,16 +77,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: auto; /* Pushes the unread count to the right */
-  margin-top: 10px; /* Optional: for vertical alignment */
+  margin-left: auto;
+  margin-top: 10px;
 }
 
-/* Chat popup area */
+/* Chat Popup Area */
 .chat-popup {
   display: flex;
   flex-direction: column;
-  position: right;
-  width: 56vw;
+  width: 56.5vw;
   height: 100%;
   background-color: var(--light-bg-color);
   border-left: 1px solid var(--primary-color);
@@ -95,11 +96,12 @@
   background-color: var(--dark-bg-color);
 }
 
+/* Chat Header */
 .chat-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: none;
+  padding: 10px;
   border-bottom: 1px solid var(--primary-color);
   background-color: var(--light-bg-color);
 }
@@ -108,6 +110,11 @@
   background-color: var(--dark-bg-color);
 }
 
+.chat-header img {
+  cursor: pointer;
+}
+
+/* Chat Messages */
 .chat-messages {
   flex: 1;
   padding: 15px;
@@ -126,35 +133,82 @@
   align-self: flex-end;
   background-color: var(--primary-color);
   color: #fff;
-  border-top-right-radius: 12px;
-  border-top-left-radius: 3px;
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 12px;
+  border-radius: 12px 12px 3px 3px;
 }
 
 .received {
   align-self: flex-start;
   background-color: rgb(163, 159, 159);
   color: #333;
-  border-top-right-radius: 3px;
-  border-top-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-  border-bottom-left-radius: 3px;
+  border-radius: 3px 3px 12px 12px;
 }
 
-/* Close chat button */
+/* Close Chat Button */
 .close-chat {
   width: 20px;
   cursor: pointer;
 }
 
-/* Responsive adjustments */
+/* Chat Input Section */
+.chat-input {
+  position: fixed;
+  bottom: 0;
+  width: 56.5%;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: var(--light-bg-color);
+  z-index: 10;
+}
+
+.layout.dark-mode .chat-input {
+  background-color: var(--dark-bg-color);
+}
+
+.message-box {
+  flex: 1;
+  padding: 10px;
+  padding-bottom: 10px;
+  border-radius: 20px;
+  resize: none;
+  outline: none;
+  border: 1px solid var(--primary-color);
+  color: var(--text-color);
+  background-color: var(--search-bg-color);
+  overflow-y: auto;
+  min-height: 40px; /* Minimum height for the text area */
+  max-height: 120px; /* Maximum height to stop expanding */
+  scrollbar-width: none;
+}
+
+.message-box::placeholder {
+  color: var(--light-text-color);
+}
+
+.layout.dark-mode .message-box {
+  background-color: var(--dark-bg-color);
+  color: var(--dark-text-color);
+}
+
+.send-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: transform 0.2s;
+}
+
+.send-button img {
+  width: 24px;
+  height: 24px;
+}
+
+.send-button:hover {
+  transform: scale(1.1);
+}
+
+/* Responsive adjustments for smaller screens */
 @media (max-width: 768px) {
-  .message {
-    padding: 5px 8px;
-    margin: 5px 0;
-    font-size:small;
-  }
   .chat-list {
     width: 100%;
     border-right: none;
@@ -162,9 +216,45 @@
 
   .chat-popup {
     width: 100%;
-    padding: none;
-    margin-left: none;
     border-left: none;
-    position: absolute;
+    position: fixed;
+    bottom: 0;
+    top: 10px;
+    left: 0;
+    padding-top: 50px; /* Adds space for header */
+  }
+
+  .chat-header {
+    padding: 15px;
+  }
+
+  .chat-messages {
+    padding: 10px;
+  }
+
+  .message {
+    padding: 5px 10px;
+    font-size: 14px;
+  }
+
+  .chat-input {
+    padding: 15px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+
+  .message-box {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .send-button img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .chat-input {
+    bottom: 50px;
   }
 }
