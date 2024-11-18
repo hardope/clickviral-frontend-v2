@@ -31,7 +31,7 @@ interface Chat {
 const Chat = () => {
 	const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 	const [message, setMessage] = useState(''); // State to store the message input
-	const [chats, setChats] = useState<Chat[]>([]); // State to store the chat list
+	const [chats, setChats] = useState<Chat[] | null>(null); // State to store the chat list
 	const messageBoxRef = useRef(null);
 	const ws = useRef<WebSocket | null>(null);
 
@@ -82,28 +82,32 @@ const Chat = () => {
 	return (
 		<div className="chat-page">
 			<div className="chat-list">
-				{chats.length === 0 ? (
+				{!chats ? (
 					<Loader />
+				) : chats.length === 0 ? (
+					<div className="no-chats">
+						<b>No chats found</b>
+					</div>
 				) : (
 					chats.map((chat, index) => (
-						<div key={index} className="chat-item" onClick={() => handleChatClick(chat)}>
-							<img src={chat.user.profileImage} alt={`${chat.user.first_name} ${chat.user.last_name}`} className="profile-pic" />
-							<div className="chat-info">
-								<div className="chat-name">
-									{chat.user.first_name} {chat.user.last_name}
-								</div>
-								<div className="last-message">
-									{chat.lastMessage.message}
-								</div>
+					<div key={index} className="chat-item" onClick={() => handleChatClick(chat)}>
+						<img src={chat.user.profileImage} alt={`${chat.user.first_name} ${chat.user.last_name}`} className="profile-pic" />
+						<div className="chat-info">
+							<div className="chat-name">
+								{chat.user.first_name} {chat.user.last_name}
 							</div>
-							{!chat.lastMessage.read && (
-								<div className="unread-count">
-									{/* You can customize the unread count display */}
-									1
-								</div>
-							)}
+							<div className="last-message">
+								{chat.lastMessage.message}
+							</div>
 						</div>
-					))
+						{!chat.lastMessage.read && (
+							<div className="unread-count">
+								{/* You can customize the unread count display */}
+								1
+							</div>
+						)}
+					</div>
+				))
 				)}
 			</div>
 
