@@ -26,6 +26,7 @@ interface LastMessage {
 interface Chat {
 	user: User;
 	lastMessage: LastMessage;
+	unread: number;
 }
 
 const Chat = () => {
@@ -100,10 +101,10 @@ const Chat = () => {
 								{chat.lastMessage.message}
 							</div>
 						</div>
-						{!chat.lastMessage.read && (
+						{chat.unread > 0 && (
 							<div className="unread-count">
 								{/* You can customize the unread count display */}
-								1
+								{chat.unread}
 							</div>
 						)}
 					</div>
