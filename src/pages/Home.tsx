@@ -3,7 +3,7 @@ import api from "../api";
 import "../styles/Home.css";
 
 const Home = () => {
-  const [userData, setUserData] = useState<any>(null);
+  const [_userData, setUserData] = useState<any>(null);
   const posts = [
     {
       id: 1,
