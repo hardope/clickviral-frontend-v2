@@ -1,0 +1,144 @@
+/* Home Page Container */
+.home-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 0 auto;
+    margin-top: -10%;
+    padding: 1rem;
+    height: 97%;
+    box-sizing: border-box;
+}
+
+/* Ensure the Home page content stays centered and does not overlap the sidebar */
+@media screen and (min-width: 768px) {
+    .home-page {
+        max-width: 700px;
+        margin-left: 13vw;
+        padding: 0 1rem;
+        margin-top: 0%;
+    }
+    .post-card {
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .post-media {
+        border-radius: 8px;
+    }
+
+    .post-actions {
+        padding-bottom: 5px;
+    }
+}
+
+/* Post Card */
+.post-card {
+    border: 1px solid var(--button-secondary);
+    padding: 1rem;
+    background: var(--background-primary);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Profile Picture and User Info */
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.timestamp {
+    font-size: 0.8rem;
+    color: var(--button-secondary);
+}
+
+/* Post Content */
+.post-content {
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+/* Separator Line */
+.separator {
+    height: 1px;
+    background: var(--primary-color);
+    opacity: 0.5;
+    margin: 0.5rem 0;
+}
+
+/* Enhanced Line Style */
+.separator-dashed {
+    border: 0;
+    border-top: 1px dashed var(--primary-color);
+    opacity: 0.7;
+    margin: 0.5rem 0;
+}
+
+/* Post Media */
+.post-media {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+}
+
+/* Post Actions */
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+/* Action Buttons */
+.like-button,
+.comment-button,
+.share-button {
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+    padding: 0.5rem 1rem;
+    background: none;
+    color: var(--text-primary);
+    transition: color 0.3s ease;
+}
+
+.like-button.liked {
+    color: var(--theme-color);
+}
+
+.like-button:hover,
+.comment-button:hover,
+.share-button:hover {
+    color: var(--theme-color);
+}
+
+/* Responsive Design for Mobile */
+@media screen and (max-width: 768px) {
+    .home-page {
+        /* max-width: 100%; */
+        margin-left: -9vw;
+        width: 120%;
+        padding: 0.5rem;
+    }
+
+    .post-card {
+        border-radius: 0;
+        padding: 1rem 0.5rem;
+    }
+}
