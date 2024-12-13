@@ -42,7 +42,7 @@ const Chat = () => {
     const [message, setMessage] = useState('');
     const [chats, setChats] = useState<Chat[]>([]);
     const [socket, setSocket] = useState<WebSocket | null>(null);
-    const [connected, setConnected] = useState(false);
+    const [_connected, setConnected] = useState(false);
     const loggedInUser = JSON.parse(localStorage.getItem('user') as string) as User;
 
     const messageBoxRef = useRef<HTMLDivElement>(null);
