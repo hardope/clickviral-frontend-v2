@@ -120,7 +120,7 @@ const Chat = () => {
     };
 
     useEffect(() => {
-        const ws = new WebSocket(`ws://localhost:3002/messenger/${localStorage.getItem('access_token')}`);
+        const ws = new WebSocket(`wss://backend.click-viral.tech/messenger/${localStorage.getItem('access_token')}`);
         setSocket(ws);
 
         ws.onopen = () => {
@@ -199,7 +199,7 @@ const Chat = () => {
         ws.onclose = () => {
             setTimeout(() => {
                 const newWs = new WebSocket(
-                    `ws://localhost:3002/messenger/${localStorage.getItem('access_token')}`
+                    `wss://backend.click-viral.tech/messenger/${localStorage.getItem('access_token')}`
                 );
                 setSocket(newWs);
             }, 500);
