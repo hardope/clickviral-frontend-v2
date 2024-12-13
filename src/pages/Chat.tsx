@@ -12,20 +12,28 @@ interface User {
 	first_name: string;
 	last_name: string;
 	profileImage: string;
+	coverImage: string;
+	bio: string;
+	last_seen: string;
 }
 
-interface LastMessage {
+interface Message {
 	id: string;
+	tempId?: string;
 	sender: string;
-	recipient: string;
+	replyId: string;
+	attachments?: [string];
 	message: string;
 	read: boolean;
 	created_at: string;
 }
 
 interface Chat {
+	id: string;
+	type: string;
 	user: User;
-	lastMessage: LastMessage;
+	last_message: Message;
+	messages: [Message];
 	unread: number;
 }
 
@@ -35,6 +43,7 @@ const Chat = () => {
 	const [chats, setChats] = useState<Chat[] | null>(null); // State to store the chat list
 	const messageBoxRef = useRef(null);
 	const ws = useRef<WebSocket | null>(null);
+	const loggedInUser = JSON.parse(localStorage.getItem('user') as string) as User;
 
 	const adjustHeight = () => {
 		const messageBox = messageBoxRef.current as any;
@@ -54,14 +63,32 @@ const Chat = () => {
 	const handleSendMessage = () => {
 		if (message.trim()) {
 			// Logic to send the message
-			console.log(message);
+			const new_message: Message = {
+				id: crypto.randomUUID(),
+				tempId: crypto.randomUUID(),
+				sender: loggedInUser.id,
+				replyId: '',
+				message: message,
+				read: false,
+				created_at: new Date().toISOString(),
+			};
+			console.log(ws.current);
+			ws.current?.send(JSON.stringify({
+				action: "send_message",
+				tempId: new_message.tempId,
+				chat: selectedChat?.id,
+				message: new_message
+			}));
+			const newChat = { ...selectedChat } as Chat;
+			newChat.messages.push(new_message);
+			console.log(new_message);
 			setMessage(''); // Clear the input after sending
 		}
 	};
 
 	useEffect(() => {
 
-		ws.current = new WebSocket('wss://c-backend.hardope.tech/messenger/' + localStorage.getItem('access_token'));
+		ws.current = new WebSocket('ws://localhost:3002/messenger/' + localStorage.getItem('access_token'));
 
 		ws.current.onmessage = (event) => {
 			const data = JSON.parse(event.data);
@@ -72,11 +99,11 @@ const Chat = () => {
 
 		};
 
-		ws.current.onclose = () => {
+		ws.current.onclose = (_event) => {
 			
 			setTimeout(() => {
-				ws.current = new WebSocket('wss://c-backend.hardope.tech/messenger/' + localStorage.getItem('access_token'));
-			}, 1000); // Reconnect after 1 second
+				ws.current = new WebSocket('ws://localhost:3002/messenger/' + localStorage.getItem('access_token'));
+			}, 500); // Reconnect after 1/2 second
 		};
 	}, []);
 
@@ -90,15 +117,15 @@ const Chat = () => {
 						<b>No chats found</b>
 					</div>
 				) : (
-					chats.map((chat, index) => (
-					<div key={index} className="chat-item" onClick={() => handleChatClick(chat)}>
-						<img src={chat.user.profileImage} alt={`${chat.user.first_name} ${chat.user.last_name}`} className="profile-pic" />
+					chats.map(chat => (
+					<div key={chat.id} className="chat-item" onClick={() => handleChatClick(chat)}>
+						<img src={chat.user.profileImage} alt='pic' className="profile-pic" />
 						<div className="chat-info">
 							<div className="chat-name">
 								{chat.user.first_name} {chat.user.last_name}
 							</div>
 							<div className="last-message">
-								{chat.lastMessage.message}
+								{chat.last_message?.message}
 							</div>
 						</div>
 						{chat.unread > 0 && (
@@ -122,10 +149,11 @@ const Chat = () => {
 						<img src={back} alt="Close Chat" className="close-chat" onClick={handleCloseChat} />
 					</div>
 					<div className="chat-messages">
-						<div className="message sent">Hello!</div>
-						<div className="message received">Hi, how are you?</div>
-						<div className="message sent">I’m good, thanks!</div>
-						{/* Add more messages as needed */}
+						{selectedChat.messages.map((msg) => (
+							<div key={msg.id} className={`message ${msg.sender === loggedInUser.id ? 'sent' : 'received'}`}>
+								{msg.message}
+							</div>
+						))}
 					</div>
 
 					{/* Message Input Field */}
