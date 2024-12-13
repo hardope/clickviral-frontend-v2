@@ -1,241 +1,315 @@
 import { useState, useRef, useEffect } from 'react';
 import '../styles/Chat.css';
-import back from '../assets/images/back.svg';
-import sendIcon from '../assets/images/back.svg'; // Add your send button icon
-// import Notify from '../utils/Notify';
+import backIcon from '../assets/images/back.svg';
+import sendIcon from '../assets/images/back.svg';
 import Loader from '../components/Loader';
 import Notify from '../utils/Notify';
 
 interface User {
-	id: string;
-	username: string;
-	email: string;
-	first_name: string;
-	last_name: string;
-	profileImage: string;
-	coverImage: string;
-	bio: string;
-	last_seen: string;
+    id: string;
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    profileImage: string;
+    coverImage: string;
+    bio: string;
+    last_seen: string;
 }
 
 interface Message {
-	id: string;
-	tempId?: string;
-	sender: string;
-	replyId: string;
-	attachments?: [string];
-	message: string;
-	read: boolean;
-	created_at: string;
+    id: string;
+    tempId?: string;
+    sender: string;
+    replyId: string;
+    attachments?: string[];
+    message: string;
+    read: boolean;
+    created_at: string;
 }
 
 interface Chat {
-	id: string;
-	type: string;
-	user: User;
-	last_message: Message;
-	messages: Message[];
-	unread: number;
+    id: string;
+    type: string;
+    user: User;
+    last_message: Message;
+    messages: Message[];
+    unread: number;
 }
 
 const Chat = () => {
-	const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
-	const [message, setMessage] = useState(''); // State to store the message input
-	const [chats, setChats] = useState<Chat[] | null>(null); // State to store the chat list
-	const messageBoxRef = useRef(null);
-	const [socket, setSocket] = useState<WebSocket | null>(null);
-	const [connected, setConnected] = useState(false);
-	const loggedInUser = JSON.parse(localStorage.getItem('user') as string) as User;
+    const [selectedChat, setSelectedChat] = useState<Chat | any>(null);
+    const [message, setMessage] = useState('');
+    const [chats, setChats] = useState<Chat[]>([]);
+    const [socket, setSocket] = useState<WebSocket | null>(null);
+    const [connected, setConnected] = useState(false);
+    const loggedInUser = JSON.parse(localStorage.getItem('user') as string) as User;
 
-	const adjustHeight = () => {
-		const messageBox = messageBoxRef.current as any;
-		if (!messageBox) return;
-		messageBox.style.height = 'auto'; // Reset height to auto to calculate scroll height
-		messageBox.style.height = `${Math.min(messageBox.scrollHeight, 120)}px`; // Set to min of scrollHeight or max-height
-	};
+    const messageBoxRef = useRef<HTMLDivElement>(null);
+    const messageInputRef = useRef<HTMLTextAreaElement>(null);
 
-	const handleChatClick = (chat: Chat) => {
-		setSelectedChat(chat);
-	};
+    const adjustHeight = () => {
+        if (messageInputRef.current) {
+            messageInputRef.current.style.height = 'auto';
+            messageInputRef.current.style.height = `${Math.min(messageInputRef.current.scrollHeight, 120)}px`;
+        }
+    };
 
-	const handleCloseChat = () => {
-		setSelectedChat(null);
-	};
+    const handleChatClick = (chat: Chat) => {
+        setSelectedChat(chat);
+        setTimeout(() => {
+            if (messageBoxRef.current) {
+                messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
+            }
+        }, 100);
+    };
 
-	const handleSendMessage = () => {
-		if (message.trim()) {
-			// Logic to send the message
-			const new_message: Message = {
-				id: crypto.randomUUID(),
-				tempId: crypto.randomUUID(),
-				sender: loggedInUser.id,
-				replyId: '',
-				message: message,
-				read: false,
-				created_at: new Date().toISOString(),
-			};
-			if (socket?.readyState === WebSocket.OPEN) {
+    const handleCloseChat = () => {
+        setSelectedChat(null);
+    };
 
-				console.log("Sending message: ", new_message);
-				socket.send(JSON.stringify({
-					action: "send_message",
-					tempId: new_message.tempId,
-					chat: selectedChat?.id,
-					message: new_message.message
-				}));
-				const newChat = { ...selectedChat } as Chat;
-				newChat.messages.push(new_message);
-				const updatedChats = chats?.map(chat => {
-					if (chat.id === selectedChat?.id) {
-						return newChat;
-					}
-					return chat;
-				});
-				console.log(updatedChats);
-				setChats(updatedChats);
-				console.log(`chats ${chats}`);
-				setMessage(''); // Clear the input after sending
-			} else {
-				Notify('Check internet connection', 'error', 'Error');
+    const handleSendMessage = () => {
+        if (message.trim() && socket?.readyState === WebSocket.OPEN) {
+            const tempId = crypto.randomUUID();
+            const newMessage: Message = {
+                id: tempId,
+                tempId,
+                sender: loggedInUser.id,
+                replyId: '',
+                message,
+                read: false,
+                created_at: new Date().toISOString(),
+            };
+
+            socket.send(
+                JSON.stringify({
+                    action: 'send_message',
+                    tempId: newMessage.tempId,
+                    chat: selectedChat?.id,
+                    message: newMessage.message,
+                })
+            );
+
+            setChats((prevChats) =>
+                prevChats?.map((chat) =>
+                    chat.id === selectedChat?.id
+                        ? { ...chat, messages: [...chat.messages, newMessage], last_message: newMessage }
+                        : chat
+                ) || []
+            );
+
+			setSelectedChat((prevChat: any) => {
+				if (prevChat) {
+					return { ...prevChat, messages: [...prevChat.messages, newMessage], last_message: newMessage };
+				}
 			}
+			);
 
-		}
-	};
+            setMessage('');
+            adjustHeight();
 
-	useEffect(() => {
+            setTimeout(() => {
+                if (messageBoxRef.current) {
+                    messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
+                }
+            }, 100);
+        } else {
+            Notify('Check your internet connection.', 'error', 'Error');
+        }
+    };
 
-		const ws = new WebSocket('ws://localhost:3002/messenger/' + localStorage.getItem('access_token'));
-		setSocket(ws);
+    useEffect(() => {
+        const ws = new WebSocket(`ws://localhost:3002/messenger/${localStorage.getItem('access_token')}`);
+        setSocket(ws);
 
-		ws.onopen = () => {
-			console.log("Connected to WebSocket");
-			setConnected(true);
-		}
+        ws.onopen = () => {
 
-		ws.onmessage = (event) => {
+            setConnected(true);
+        };
+
+        ws.onmessage = (event) => {
 			const data = JSON.parse(event.data);
-			if (data.action == "get_chats") {
-				console.log(data.chats);
-				setChats(data.chats);
-			} else if (data.action == "message_callback") {
-				console.log("-------------callback----------------")
-				console.log(chats)
-				const newChats = chats?.map(chat => {
-					console.log(`chat ------------- ${chat}`);
-					if (chat.id === data.chat) {
-						console.log("Here")
-						const newChat = { ...chat } as Chat;
-						newChat.messages = newChat.messages.map(msg => {
-							let newMessage = msg;
-							
-							if (msg.tempId === data.tempId) {
-								console.log("Message sent successfully");
-								newMessage = {
-									...msg,
-									id: data.message.id,
-									tempId: undefined
-								}
-								console.log(newMessage);
-								return newMessage;
+			
+			switch (data.action) {
+				case 'get_chats':
+					setChats(data.chats);
+					console.log(data.chats);	
+					console.log('Chats:', chats);
+					break;
+				case 'message_callback':
+					console.log('Updating chat:', data.chat);
+					setChats(prevChats => {
+						return prevChats.map(chat => {
+							if (chat.id === data.chat) {
+								const updatedChat = {...chat};
+								updatedChat.messages = updatedChat.messages.map(msg => 
+									msg.tempId === data.tempId ? {...msg, id: data.message.id, tempId: undefined } : msg
+								);
+								updatedChat.last_message = updatedChat.messages[updatedChat.messages.length - 1];
+								console.log('Updated chat:', updatedChat);
+								return updatedChat;
 							}
-							newChat.last_message = newMessage;
-							return msg;
+							return chat;
 						});
-						// setSelectedChat(newChat);
+					});
+					break;
+				case "receive_message":
+					const newMessage: Message = {
+						id: data.id,
+						sender: data.sender,
+						replyId: '',
+						message: data.message,
+						read: false,
+						created_at: data.created_at,
+						attachments: data.attachments || [],
+					};
+					console.log(newMessage);
+					console.log(selectedChat);
+					console.log(chats);
+					setChats((prevChats) =>
+						prevChats?.map((chat) =>
+							chat.id === data.chat
+								? {
+									...chat,
+									messages: [...chat.messages, newMessage],
+									last_message: newMessage
+								}
+								: chat
+						) || []
+					);
+					
+					if (selectedChat?.id === data.chat) {
+						setSelectedChat((prevChat: any) =>
+							prevChat
+								? {
+									...prevChat,
+									messages: [...prevChat.messages, newMessage],
+									last_message: newMessage
+								}
+								: prevChat
+						);
+						setTimeout(() => {
+							if (messageBoxRef.current) {
+								messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
+							}
+						}, 100);
 					}
-				});
-				console.log(newChats);
-				setChats(newChats as unknown as Chat[]);
-			} else {
-				console.log(data);
+					break;
 			}
 		};
+					
+		
 
-		ws.onclose = (_event) => {
-			
-			setTimeout(() => {
-				const ws = new WebSocket('ws://localhost:3002/messenger/' + localStorage.getItem('access_token'));
-				setSocket(ws);
-			}, 500); // Reconnect after 1/2 second
-		};
+        ws.onclose = () => {
+            setTimeout(() => {
+                const newWs = new WebSocket(
+                    `ws://localhost:3002/messenger/${localStorage.getItem('access_token')}`
+                );
+                setSocket(newWs);
+            }, 500);
+        };
 
-		ws.onerror = (event) => {
-			console.warn(event);
-		}
+        ws.onerror = (event) => {
+            console.error('WebSocket error:', event);
+        };
 
-		return () => {
-			ws.close();
-		}
-	}, []);
+        return () => {
+            ws.close();
+        };
+    }, []);
 
-	return (
-		<div className="chat-page">
-			<div className="chat-list">
-				{!chats ? (
-					<Loader />
-				) : chats.length === 0 ? (
-					<div className="no-chats">
-						<b>No chats found</b>
-					</div>
-				) : (
-					chats.map(chat => (
-					<div key={chat.id} className="chat-item" onClick={() => handleChatClick(chat)}>
-						<img src={chat.user.profileImage} alt='pic' className="profile-pic" />
-						<div className="chat-info">
-							<div className="chat-name">
-								{chat.user.first_name} {chat.user.last_name}
-							</div>
-							<div className="last-message">
-								{chat.last_message?.message}
-							</div>
-						</div>
-						{chat.unread > 0 && (
-							<div className="unread-count">
-								{/* You can customize the unread count display */}
-								{chat.unread}
-							</div>
-						)}
-					</div>
-				))
-				)}
-			</div>
+    useEffect(() => {
+        if (messageBoxRef.current) {
+            messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
+        }
+    }, [selectedChat]);
 
-			{selectedChat && (
-				<div className="chat-popup">
-					<div className="chat-header">
-						<span className='chat-header-info'>
-							<img src={selectedChat.user.profileImage} alt={`${selectedChat.user.first_name} ${selectedChat.user.last_name}`} className="profile-pic" />
-							<span className="names">{selectedChat.user.first_name} {selectedChat.user.last_name}</span>
-						</span>
-						<img src={back} alt="Close Chat" className="close-chat" onClick={handleCloseChat} />
-					</div>
-					<div className="chat-messages">
-						{selectedChat.messages.map((msg) => (
-							<div key={msg.id} className={`message ${msg.sender === loggedInUser.id ? 'sent' : 'received'}`}>
-								{msg.message}
-							</div>
-						))}
-					</div>
+    return (
+        <div className="chat-page">
+            <div className="chat-list">
+                {!chats ? (
+                    <Loader />
+                ) : chats.length === 0 ? (
+                    <div className="no-chats">
+                        <b>No chats found</b>
+                    </div>
+                ) : (
+                    chats.map((chat) => (
+                        <div
+                            key={chat.id}
+                            className="chat-item"
+                            onClick={() => handleChatClick(chat)}
+                        >
+                            <img
+                                src={chat.user.profileImage}
+                                alt="Profile"
+                                className="profile-pic"
+                            />
+                            <div className="chat-info">
+                                <div className="chat-name">
+                                    {chat.user.first_name} {chat.user.last_name}
+                                </div>
+                                <div className="last-message">
+                                    {chat.last_message?.message}
+                                </div>
+                            </div>
+                            {chat.unread > 0 && <div className="unread-count">{chat.unread}</div>}
+                        </div>
+                    ))
+                )}
+            </div>
 
-					{/* Message Input Field */}
-					<div className="chat-input">
-						<textarea
-							ref={messageBoxRef}
-							value={message}
-							onChange={(e) => setMessage(e.target.value)}
-							placeholder="Type a message"
-							className="message-box"
-							rows={1} // Automatically expands as text increases
-							onInput={adjustHeight}
-						/>
-						<button onClick={handleSendMessage} className="send-button">
-							<img src={sendIcon} alt="Send" />
-						</button>
-					</div>
-				</div>
-			)}
-		</div>
-	);
+            {selectedChat && (
+                <div className="chat-popup">
+                    <div className="chat-header">
+                        <span className="chat-header-info">
+                            <img
+                                src={selectedChat.user.profileImage}
+                                alt="Profile"
+                                className="profile-pic"
+                            />
+                            <span className="names">
+                                {selectedChat.user.first_name} {selectedChat.user.last_name}
+                            </span>
+                        </span>
+                        <img
+                            src={backIcon}
+                            alt="Close Chat"
+                            className="close-chat"
+                            onClick={handleCloseChat}
+                        />
+                    </div>
+                    <div className="chat-messages" ref={messageBoxRef}>
+                        {selectedChat.messages.map((msg: any) => (
+                            <div
+                                key={msg.id}
+                                className={`message ${
+                                    msg.sender === loggedInUser.id ? 'sent' : 'received'
+                                }`}
+                            >
+                                {msg.message}
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="chat-input">
+                        <textarea
+                            ref={messageInputRef}
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            placeholder="Type a message"
+                            className="message-box"
+                            rows={1}
+                            onInput={adjustHeight}
+                        />
+                        <button onClick={handleSendMessage} className="send-button">
+                            <img src={sendIcon} alt="Send" />
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default Chat;
