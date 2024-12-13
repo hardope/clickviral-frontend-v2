@@ -246,7 +246,7 @@ const Chat = () => {
                                     {chat.user.first_name} {chat.user.last_name}
                                 </div>
                                 <div className="last-message">
-                                    {chat.last_message?.message}
+                                    {chat.last_message.message}
                                 </div>
                             </div>
                             {chat.unread > 0 && <div className="unread-count">{chat.unread}</div>}
