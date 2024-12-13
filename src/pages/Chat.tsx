@@ -38,9 +38,9 @@ interface Chat {
 }
 
 const Chat = () => {
-    const [selectedChat, setSelectedChat] = useState<Chat | any>(null);
+    const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
     const [message, setMessage] = useState('');
-    const [chats, setChats] = useState<Chat[]>([]);
+    const [chats, setChats] = useState<Chat[]>();
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const [_connected, setConnected] = useState(false);
     const loggedInUser = JSON.parse(localStorage.getItem('user') as string) as User;
@@ -98,10 +98,11 @@ const Chat = () => {
                 ) || []
             );
 
-			setSelectedChat((prevChat: any) => {
+			setSelectedChat((prevChat) => {
 				if (prevChat) {
 					return { ...prevChat, messages: [...prevChat.messages, newMessage], last_message: newMessage };
 				}
+				return null;
 			}
 			);
 
@@ -119,91 +120,86 @@ const Chat = () => {
     };
 
     useEffect(() => {
-        const ws = new WebSocket(`wss://backend.click-viral.tech/messenger/${localStorage.getItem('access_token')}`);
+        const ws = new WebSocket(`ws://localhost:3002/messenger/${localStorage.getItem('access_token')}`);
         setSocket(ws);
 
         ws.onopen = () => {
-
+            console.log('Connected to WebSocket');
             setConnected(true);
         };
 
         ws.onmessage = (event) => {
 			const data = JSON.parse(event.data);
+		
+			if (data.action === 'get_chats') {
+				setChats(data.chats);
+
+			} else if (data.action === 'message_callback') {
+
+				setChats((prevChats) =>
+					prevChats?.map((chat) => {
+						if (chat.id === data.chat) {
+							const updatedChat = { ...chat };
+							updatedChat.messages = updatedChat.messages.map((msg) =>
+								msg.tempId === data.tempId ? { ...msg, id: data.message.id, tempId: undefined } : msg
+							);
+							updatedChat.last_message =
+								updatedChat.messages[updatedChat.messages.length - 1];
+							return updatedChat;
+						}
+						return chat;
+					}) || []
+				);
+			} else if (data.action === 'receive_message') {
+				const newMessage: Message = {
+					id: data.id,
+					sender: data.sender,
+					replyId: '',
+					message: data.message,
+					read: false,
+					created_at: data.created_at, // Use the timestamp from the server
+					attachments: data.attachments || [],
+				};
+				console.log(newMessage);
+				console.log(selectedChat);
+				console.log(chats);
+				setChats((prevChats) =>
+					prevChats?.map((chat) =>
+						chat.id === data.chat
+							? {
+								...chat,
+								messages: [...chat.messages, newMessage],
+								last_message: newMessage,
+							}
+							: chat
+					) || []
+				);
 			
-			switch (data.action) {
-				case 'get_chats':
-					setChats(data.chats);
-					console.log(data.chats);	
-					console.log('Chats:', chats);
-					break;
-				case 'message_callback':
-					console.log('Updating chat:', data.chat);
-					setChats(prevChats => {
-						return prevChats.map(chat => {
-							if (chat.id === data.chat) {
-								const updatedChat = {...chat};
-								updatedChat.messages = updatedChat.messages.map(msg => 
-									msg.tempId === data.tempId ? {...msg, id: data.message.id, tempId: undefined } : msg
-								);
-								updatedChat.last_message = updatedChat.messages[updatedChat.messages.length - 1];
-								console.log('Updated chat:', updatedChat);
-								return updatedChat;
+				if (selectedChat?.id === data.chat) {
+					setSelectedChat((prevChat) =>
+						prevChat
+							? {
+								...prevChat,
+								messages: [...prevChat.messages, newMessage],
+								last_message: newMessage,
 							}
-							return chat;
-						});
-					});
-					break;
-				case "receive_message":
-					const newMessage: Message = {
-						id: data.id,
-						sender: data.sender,
-						replyId: '',
-						message: data.message,
-						read: false,
-						created_at: data.created_at,
-						attachments: data.attachments || [],
-					};
-					console.log(newMessage);
-					console.log(selectedChat);
-					console.log(chats);
-					setChats((prevChats) =>
-						prevChats?.map((chat) =>
-							chat.id === data.chat
-								? {
-									...chat,
-									messages: [...chat.messages, newMessage],
-									last_message: newMessage
-								}
-								: chat
-						) || []
+							: null
 					);
-					
-					if (selectedChat?.id === data.chat) {
-						setSelectedChat((prevChat: any) =>
-							prevChat
-								? {
-									...prevChat,
-									messages: [...prevChat.messages, newMessage],
-									last_message: newMessage
-								}
-								: prevChat
-						);
-						setTimeout(() => {
-							if (messageBoxRef.current) {
-								messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
-							}
-						}, 100);
-					}
-					break;
+					setTimeout(() => {
+						if (messageBoxRef.current) {
+							messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
+						}
+					}, 100);
+				}
 			}
-		};
+		}
 					
 		
 
         ws.onclose = () => {
             setTimeout(() => {
                 const newWs = new WebSocket(
-                    `wss://backend.click-viral.tech/messenger/${localStorage.getItem('access_token')}`
+                    `ws://localhost:3002/messenger/${localStorage.getItem('access_token')}`
                 );
                 setSocket(newWs);
             }, 500);
@@ -280,7 +276,7 @@ const Chat = () => {
                         />
                     </div>
                     <div className="chat-messages" ref={messageBoxRef}>
-                        {selectedChat.messages.map((msg: any) => (
+                        {selectedChat.messages.map((msg) => (
                             <div
                                 key={msg.id}
                                 className={`message ${
