@@ -4,6 +4,7 @@ import back from '../assets/images/back.svg';
 import sendIcon from '../assets/images/back.svg'; // Add your send button icon
 // import Notify from '../utils/Notify';
 import Loader from '../components/Loader';
+import Notify from '../utils/Notify';
 
 interface User {
 	id: string;
@@ -33,7 +34,7 @@ interface Chat {
 	type: string;
 	user: User;
 	last_message: Message;
-	messages: [Message];
+	messages: Message[];
 	unread: number;
 }
 
@@ -42,7 +43,8 @@ const Chat = () => {
 	const [message, setMessage] = useState(''); // State to store the message input
 	const [chats, setChats] = useState<Chat[] | null>(null); // State to store the chat list
 	const messageBoxRef = useRef(null);
-	const ws = useRef<WebSocket | null>(null);
+	const [socket, setSocket] = useState<WebSocket | null>(null);
+	const [connected, setConnected] = useState(false);
 	const loggedInUser = JSON.parse(localStorage.getItem('user') as string) as User;
 
 	const adjustHeight = () => {
@@ -72,39 +74,98 @@ const Chat = () => {
 				read: false,
 				created_at: new Date().toISOString(),
 			};
-			console.log(ws.current);
-			ws.current?.send(JSON.stringify({
-				action: "send_message",
-				tempId: new_message.tempId,
-				chat: selectedChat?.id,
-				message: new_message
-			}));
-			const newChat = { ...selectedChat } as Chat;
-			newChat.messages.push(new_message);
-			console.log(new_message);
-			setMessage(''); // Clear the input after sending
+			if (socket?.readyState === WebSocket.OPEN) {
+
+				console.log("Sending message: ", new_message);
+				socket.send(JSON.stringify({
+					action: "send_message",
+					tempId: new_message.tempId,
+					chat: selectedChat?.id,
+					message: new_message.message
+				}));
+				const newChat = { ...selectedChat } as Chat;
+				newChat.messages.push(new_message);
+				const updatedChats = chats?.map(chat => {
+					if (chat.id === selectedChat?.id) {
+						return newChat;
+					}
+					return chat;
+				});
+				console.log(updatedChats);
+				setChats(updatedChats);
+				console.log(`chats ${chats}`);
+				setMessage(''); // Clear the input after sending
+			} else {
+				Notify('Check internet connection', 'error', 'Error');
+			}
+
 		}
 	};
 
 	useEffect(() => {
 
-		ws.current = new WebSocket('ws://localhost:3002/messenger/' + localStorage.getItem('access_token'));
+		const ws = new WebSocket('ws://localhost:3002/messenger/' + localStorage.getItem('access_token'));
+		setSocket(ws);
 
-		ws.current.onmessage = (event) => {
+		ws.onopen = () => {
+			console.log("Connected to WebSocket");
+			setConnected(true);
+		}
+
+		ws.onmessage = (event) => {
 			const data = JSON.parse(event.data);
 			if (data.action == "get_chats") {
 				console.log(data.chats);
 				setChats(data.chats);
+			} else if (data.action == "message_callback") {
+				console.log("-------------callback----------------")
+				console.log(chats)
+				const newChats = chats?.map(chat => {
+					console.log(`chat ------------- ${chat}`);
+					if (chat.id === data.chat) {
+						console.log("Here")
+						const newChat = { ...chat } as Chat;
+						newChat.messages = newChat.messages.map(msg => {
+							let newMessage = msg;
+							
+							if (msg.tempId === data.tempId) {
+								console.log("Message sent successfully");
+								newMessage = {
+									...msg,
+									id: data.message.id,
+									tempId: undefined
+								}
+								console.log(newMessage);
+								return newMessage;
+							}
+							newChat.last_message = newMessage;
+							return msg;
+						});
+						// setSelectedChat(newChat);
+					}
+				});
+				console.log(newChats);
+				setChats(newChats as unknown as Chat[]);
+			} else {
+				console.log(data);
 			}
-
 		};
 
-		ws.current.onclose = (_event) => {
+		ws.onclose = (_event) => {
 			
 			setTimeout(() => {
-				ws.current = new WebSocket('ws://localhost:3002/messenger/' + localStorage.getItem('access_token'));
+				const ws = new WebSocket('ws://localhost:3002/messenger/' + localStorage.getItem('access_token'));
+				setSocket(ws);
 			}, 500); // Reconnect after 1/2 second
 		};
+
+		ws.onerror = (event) => {
+			console.warn(event);
+		}
+
+		return () => {
+			ws.close();
+		}
 	}, []);
 
 	return (
