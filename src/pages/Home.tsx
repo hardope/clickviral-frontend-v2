@@ -4,61 +4,73 @@ import "../styles/Home.css";
 
 const Home = () => {
   const [_userData, setUserData] = useState<any>(null);
-  const posts = [
+  const [posts, setPosts] = useState([
     {
-      id: 1,
-      user: "John Doe",
-      profilePic: "https://via.placeholder.com/50", // Profile picture
-      content: "Exploring the mountains 🌄",
-      media: "https://via.placeholder.com/600x300",
-      type: "image",
-      likes: 34,
-      comments: 12,
-      timestamp: "2024-12-08T10:00:00Z", // ISO format for easier parsing
+      "title": "",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit est laborum.",
+      "user": {
+          "username": "user1",
+          "email": "user@mail.com",
+          "first_name": "Jeremiah",
+          "last_name": "Adeyeri",
+          "bio": "Test bio for users",
+          "profileImage": "https://backend.click-viral.tech/assets/bfef6e4b-bc5a-4bb1-8e8b-19f48b2f3588.jpeg",
+          "coverImage": "",
+          "last_seen": "2024-12-31T09:48:42.677Z",
+          "is_active": true,
+          "is_admin": false,
+          "profile_type": "public",
+          "date_joined": "2024-08-30T01:26:27.083Z",
+          "id": "66d11fc39d31bb377c415b0d"
+      },
+      "type": "post",
+      "created_at": "2024-12-30T17:51:20.833Z",
+      "updated_at": "2024-12-30T17:51:20.833Z",
+      "id": "6772dd986bfe7b19a817a7c5",
+      "isLiked": false,
+      "likes": 0,
+      "comments": 0
     },
     {
-      id: 2,
-      user: "Jane Smith",
-      profilePic: "https://via.placeholder.com/50",
-      content: "",
-      media: "https://via.placeholder.com/600x300",
-      type: "video",
-      likes: 102,
-      comments: 48,
-      timestamp: "2024-12-07T09:00:00Z",
-    },
-    {
-      id: 3,
-      user: "Nobody",
-      profilePic: "https://via.placeholder.com/50",
-      content:
-        "A lot of posts to check out in lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec odio nec odio.",
-      media: "",
-      type: "",
-      likes: 102,
-      comments: 48,
-      timestamp: "2024-12-07T08:45:00Z",
-    },
-    {
-      id: 4,
-      user: "No One for real",
-      profilePic: "https://via.placeholder.com/50",
-      content:
-        "A lot of posts to check out in lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec odio nec odio. A lot of posts to check out in lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec odio nec odio.",
-      media: "https://via.placeholder.com/600x300",
-      type: "",
-      likes: 102,
-      comments: 48,
-      timestamp: "2024-12-10T08:45:00Z",
-    },
-  ];
+      "title": "",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "user": {
+          "username": "hardope",
+          "email": "adeyeriopeoluwa05@gmail.com",
+          "first_name": "Opeoluwa",
+          "last_name": "Adeyeri",
+          "bio": "Intern Software Engineer @hubinit",
+          "profileImage": "https://backend.click-viral.tech/assets/83ce0a1a-00dd-4f8d-b3fd-6415bafcc839.jpg",
+          "coverImage": "https://backend.click-viral.tech/assets/f1ec807b-ae95-4987-8f64-6420eccd70ed.jpg",
+          "last_seen": "2024-12-30T18:19:03.736Z",
+          "is_active": true,
+          "is_admin": false,
+          "profile_type": "public",
+          "date_joined": "2024-06-27T22:45:16.514Z",
+          "id": "667deb7c5bd6c8753bb2ecf0"
+      },
+      "type": "post",
+      "created_at": "2024-12-30T16:44:14.808Z",
+      "updated_at": "2024-12-30T16:44:14.808Z",
+      "id": "6772cdde7b10e51824abb7fd",
+      "isLiked": false,
+      "likes": 1,
+      "comments": 1
+  },
+  ]);
 
-  const [likedPosts, setLikedPosts] = useState<number[]>([]);
-
-  const toggleLike = (id: any) => {
-    setLikedPosts((prev: any) =>
-      prev.includes(id) ? prev.filter((postId: any) => postId !== id) : [...prev, id]
-    );
+  const toggleLike = (id: string) => {
+    const updatedPosts = posts.map((post) => {
+      if (post.id === id) {
+        return {
+          ...post,
+          isLiked: !post.isLiked,
+          likes: post.isLiked ? post.likes - 1 : post.likes + 1,
+        };
+      }
+      return post;
+    });
+    setPosts(updatedPosts);
   };
 
   const formatTime = (isoTime: string) => {
@@ -94,33 +106,23 @@ const Home = () => {
         <div className="post-card" key={post.id}>
           <div className="post-header">
             <img
-              src={post.profilePic}
-              alt={`${post.user}'s profile`}
+              src={post.user.profileImage}
+              alt={`${post.user.first_name}'s profile`}
               className="profile-pic"
             />
             <div className="user-info">
-              <strong>{post.user}</strong>
-              <span className="timestamp">{formatTime(post.timestamp)}</span>
+              <strong>{post.user.first_name} {post.user.last_name}</strong>
+              <span className="timestamp">{formatTime(post.created_at)}</span>
             </div>
           </div>
           {post.content && <p className="post-content">{post.content}</p>}
-          {post.media && (
-            <>
-              <div className="separator"></div>
-              {post.type === "image" ? (
-                <img src={post.media} alt="Post media" className="post-media" />
-              ) : (
-                <video src={post.media} controls className="post-media"></video>
-              )}
-            </>
-          )}
           <div className="separator"></div>
           <div className="post-actions">
             <button
-              className={`like-button ${likedPosts.includes(post.id) ? "liked" : ""}`}
+              className={`like-button ${post.isLiked ? "liked" : ""}`}
               onClick={() => toggleLike(post.id)}
             >
-              {likedPosts.includes(post.id) ? "❤️" : "🖤"} {likedPosts.includes(post.id) ? post.likes + 1 : post.likes}
+              {post.isLiked ? "❤️" : "🖤"} {post.likes}
             </button>
             <button className="comment-button">💬 {post.comments}</button>
             <button className="share-button">🔗 Share</button>
