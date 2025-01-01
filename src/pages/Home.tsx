@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import api from "../api";
 import "../styles/Home.css";
+import profileSvg from '/images/profile.svg';
+import Loader from "../components/Loader";
 
 const Home = () => {
-  const [_userData, setUserData] = useState<any>(null);
-  const [posts, setPosts] = useState([
+  const [userData, setUserData] = useState<any>(null);
+  const [posts, setPosts] = useState<any>([
     {
       "title": "",
       "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit est laborum.",
@@ -57,10 +59,10 @@ const Home = () => {
       "likes": 1,
       "comments": 1
   },
-  ]);
+  ])
 
   const toggleLike = (id: string) => {
-    const updatedPosts = posts.map((post) => {
+    const updatedPosts = posts.map((post: any) => {
       if (post.id === id) {
         return {
           ...post,
@@ -102,33 +104,59 @@ const Home = () => {
 
   return (
     <div className="home-page">
-      {posts.map((post) => (
-        <div className="post-card" key={post.id}>
-          <div className="post-header">
-            <img
-              src={post.user.profileImage}
-              alt={`${post.user.first_name}'s profile`}
-              className="profile-pic"
-            />
-            <div className="user-info">
-              <strong>{post.user.first_name} {post.user.last_name}</strong>
-              <span className="timestamp">{formatTime(post.created_at)}</span>
-            </div>
+      {/* <button className="open-create-post-button"><span style={{ fontSize: "24px" }}>+</span></button> */}
+      {userData ? (
+      <>
+        <div className="create-post">
+        <div className="create-post-container">
+          <div className="create-post">
+          <div className="create-post-header">
+            <img src={userData.profileImage || profileSvg} alt="Profile Picture" className="profile-picture" />
+            <input className="create-post-input" placeholder="What's on your mind?" disabled />
           </div>
-          {post.content && <p className="post-content">{post.content}</p>}
-          <div className="separator"></div>
-          <div className="post-actions">
-            <button
-              className={`like-button ${post.isLiked ? "liked" : ""}`}
-              onClick={() => toggleLike(post.id)}
-            >
-              {post.isLiked ? "❤️" : "🖤"} {post.likes}
-            </button>
-            <button className="comment-button">💬 {post.comments}</button>
-            <button className="share-button">🔗 Share</button>
+          <div className="create-post-actions">
+            <button className="post-action-button photo-upload"><img src="/images/picture.svg" className="icon" alt="Upload" /></button>
+            <button className="post-action-button capture-image"><img src="/images/camera.svg" className="icon" alt="Capture" /></button>
+          </div>
           </div>
         </div>
-      ))}
+        </div>
+      
+        {posts.length > 0 ? (
+          posts.map((post: any) => (
+            <div className="post-card" key={post.id}>
+              <div className="post-header">
+          <img
+            src={post.user.profileImage}
+            alt={`${post.user.first_name}'s profile`}
+            className="profile-pic"
+          />
+          <div className="user-info">
+            <strong>{post.user.first_name} {post.user.last_name}</strong>
+            <span className="timestamp">{formatTime(post.created_at)}</span>
+          </div>
+              </div>
+              {post.content && <p className="post-content">{post.content}</p>}
+              <div className="separator"></div>
+              <div className="post-actions">
+          <button
+            className={`like-button ${post.isLiked ? "liked" : ""}`}
+            onClick={() => toggleLike(post.id)}
+          >
+            {post.isLiked ? "❤️" : "🖤"} {post.likes}
+          </button>
+          <button className="comment-button">💬 {post.comments}</button>
+          <button className="share-button">🔗 Share</button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <Loader></Loader>
+        )}
+      </>
+      ) : (
+      <Loader />
+      )}
     </div>
   );
 };

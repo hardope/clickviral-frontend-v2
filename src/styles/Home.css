@@ -38,7 +38,7 @@
     background: var(--background-primary);
     border-radius: 8px;
     overflow: hidden;
-    margin-bottom: -30px;
+    margin-bottom: -10px;
 }
 
 /* Profile Picture and User Info */
@@ -103,6 +103,7 @@
     justify-content: space-between;
     align-items: center;
     margin-top: 0.5rem;
+    padding-bottom: -10px;
 }
 
 /* Action Buttons */
@@ -141,4 +142,70 @@
         border-radius: 0;
         padding: 1rem 0.5rem;
     }
+}
+
+/* Popup Overlay */
+.create-post {
+    width: 100%;
+    background-color: var(--theme-color);
+    align-items: center;
+}
+
+.create-post img {
+    width: 50%;
+}
+
+/* Popup Container */
+.create-post-container {
+    background-color: var(--background-primary);
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    position: relative;
+}
+
+/* Popup Form Styling */
+.create-post-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.create-post-header .profile-picture {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.create-post-header .create-post-input {
+    padding: 0.75rem;
+    border: 1px solid var(--button-secondary);
+    border-radius: 6px;
+    background: var(--background-secondary);
+    color: var(--text-primary);
+    font-size: 1rem;
+    width: 85%;
+}
+
+.create-post-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.post-action-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: var(--button-secondary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.post-action-button:hover {
+    background: var(--theme-color);
+    color: var(--text-secondary);
 }
