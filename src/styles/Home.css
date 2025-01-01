@@ -34,7 +34,8 @@
 /* Post Card */
 .post-card {
     border: 1px solid var(--button-secondary);
-    padding: 1rem;
+    /* padding: 1rem; */
+    /* padding-left: 120px; */
     background: var(--background-primary);
     border-radius: 8px;
     overflow: hidden;
@@ -70,6 +71,7 @@
 .post-content {
     margin-bottom: 0.5rem;
     color: var(--text-primary);
+    padding: 10px;
 }
 
 /* Separator Line */
