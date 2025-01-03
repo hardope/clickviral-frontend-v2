@@ -1,214 +1,46 @@
-/* Home Page Container */
 .comments-page {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-top: -20px;
-  padding-bottom: 1rem;
-  height: 99%;
-  /* width: 120%; */
-  box-sizing: border-box;
+  gap: 2rem;
+  padding-bottom: 35px;
 }
 
-/* Ensure the Home page content stays centered and does not overlap the sidebar */
-@media screen and (min-width: 768px) {
-  .home-page {
-      max-width: 700px;
-      margin-left: 13vw;
-      padding: 0 1rem;
-      margin-top: 0%;
-  }
-  .post-card {
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .post-media {
-      border-radius: 8px;
-  }
-
-  .post-actions {
-      padding-bottom: 5px;
-  }
+.post-section {
+  margin-bottom: 2rem;
 }
 
-/* Post Card */
-.post-card {
-  border: 1px solid var(--button-secondary);
-  /* padding: 1rem; */
-  /* padding-left: 120px; */
-  background: var(--background-primary);
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: -10px;
-}
-
-/* Profile Picture and User Info */
-.post-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.profile-pic {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.user-info {
+.comments-section {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 }
 
-.timestamp {
-  font-size: 0.8rem;
-  color: var(--button-secondary);
-}
-
-/* Post Content */
-.post-content {
-  margin-bottom: 0.5rem;
-  color: var(--text-primary);
-  /* padding: 10px; */
-}
-
-/* Separator Line */
-.separator {
-  height: 1px;
-  background: var(--primary-color);
-  opacity: 0.5;
-  margin: 0.5rem 0;
-}
-
-/* Enhanced Line Style */
-.separator-dashed {
-  border: 0;
-  border-top: 1px dashed var(--primary-color);
-  opacity: 0.7;
-  margin: 0.5rem 0;
-}
-
-/* Post Media */
-.post-media {
-  width: 100%;
-  max-height: 500px;
-  object-fit: cover;
-  margin-bottom: 0.5rem;
-  border-radius: 4px;
-}
-
-/* Post Actions */
-.post-actions {
+.new-comment {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 0.5rem;
-  padding-bottom: -10px;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-/* Action Buttons */
-.like-button,
-.comment-button,
-.share-button {
-  font-size: 0.9rem;
-  cursor: pointer;
-  border: none;
-  padding: 0.5rem 1rem;
-  background: none;
-  color: var(--text-primary);
-  transition: color 0.3s ease;
-}
-
-.like-button.liked {
-  color: var(--theme-color);
-}
-
-.like-button:hover,
-.comment-button:hover,
-.share-button:hover {
-  color: var(--theme-color);
-}
-
-/* Responsive Design for Mobile */
-@media screen and (max-width: 768px) {
-  .home-page {
-      /* max-width: 100%; */
-      margin-left: -9vw;
-      width: 120%;
-      padding: 0.5rem;
-  }
-
-  .post-card {
-      border-radius: 0;
-      /* padding: 1rem 0.5rem; */
-  }
-}
-
-/* Popup Overlay */
-.create-post {
+.new-comment-input {
   width: 100%;
-  background-color: var(--theme-color);
-  align-items: center;
-}
-
-.create-post img {
-  width: 50%;
-}
-
-/* Popup Container */
-.create-post-container {
-  background-color: var(--background-primary);
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  position: relative;
-}
-
-/* Popup Form Styling */
-.create-post-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.create-post-header .profile-picture {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.create-post-header .create-post-input {
-  padding: 0.75rem;
+  padding: 0.5rem;
   border: 1px solid var(--button-secondary);
-  border-radius: 6px;
-  background: var(--background-secondary);
-  color: var(--text-primary);
+  border-radius: 8px;
+  resize: none;
   font-size: 1rem;
-  width: 85%;
 }
 
-.create-post-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
-}
-
-.post-action-button {
+.submit-comment-button {
+  align-self: flex-end;
   padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+  background: var(--theme-color);
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
+  color: #fff;
   cursor: pointer;
-  background: var(--button-secondary);
-  color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s;
 }
 
-.post-action-button:hover {
-  background: var(--theme-color);
-  color: var(--text-secondary);
+.submit-comment-button:hover {
+  background: darken(var(--theme-color), 10%);
 }

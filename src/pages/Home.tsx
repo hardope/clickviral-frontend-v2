@@ -3,10 +3,12 @@ import api from "../api";
 import "../styles/Home.css";
 import profileSvg from '/images/profile.svg';
 import Loader from "../components/Loader";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
 	const [userData, setUserData] = useState<any>(null);
 	const [posts, setPosts] = useState<any>([])
+	const navigate = useNavigate();
 
 	const toggleLike = (id: string) => {
 		const updatedPosts = posts.map((post: any) => {
@@ -104,7 +106,9 @@ const Home = () => {
 			>
 				{post.isLiked ? "❤️" : "🖤"} {post.likes}
 			</button>
-			<button className="comment-button">💬 {post.comments}</button>
+			<button className="comment-button" onClick={() => navigate(
+				`/comments/${post.id}`
+			)}>💬 {post.comments}</button>
 			<button className="share-button">🔗 Share</button>
 				</div>
 				</div>
