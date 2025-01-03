@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "../styles/CreatePost.css";
 import api from "../api";
 import Notify from "../utils/Notify";
@@ -8,10 +8,16 @@ const CreatePost = () => {
     const [content, setContent] = useState<string>("");
     const [file, setFile] = useState<File | null>(null);
     const [filePreview, setFilePreview] = useState<string | null>(null);
+    const [cameraActive, setCameraActive] = useState<boolean>(false);
+    const [capturedImage, setCapturedImage] = useState<string | null>(null);
+    const videoRef = useRef<HTMLVideoElement | null>(null);
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const navigate = useNavigate();
 
     const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setContent(e.target.value);
+        e.target.style.height = "auto";
+        e.target.style.height = `${e.target.scrollHeight}px`;
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,7 +30,7 @@ const CreatePost = () => {
             if (fileType.startsWith("image/") || fileType.startsWith("video/")) {
                 setFilePreview(URL.createObjectURL(file));
             } else if (fileType === "application/pdf") {
-                setFilePreview("/images/pdf-preview.svg"); // Placeholder for PDF preview
+                setFilePreview("/images/pdf-preview.svg");
             } else {
                 setFilePreview(null);
                 Notify("Unsupported file type", "error", "Error");
@@ -32,8 +38,47 @@ const CreatePost = () => {
         }
     };
 
+    // const handleCameraClick = () => {
+    //     navigator.mediaDevices
+    //         .getUserMedia({ video: true })
+    //         .then((stream) => {
+    //             setCameraActive(true);
+    //             if (videoRef.current) {
+    //                 videoRef.current.srcObject = stream;
+    //                 videoRef.current.play();
+    //             }
+    //         })
+    //         .catch((err) => {
+    //             console.error(err);
+    //             Notify("Unable to access camera", "error", "Error");
+    //         });
+    // };
+
+    const handleCapture = () => {
+        if (videoRef.current && canvasRef.current) {
+            const context = canvasRef.current.getContext("2d");
+            if (context) {
+                canvasRef.current.width = videoRef.current.videoWidth;
+                canvasRef.current.height = videoRef.current.videoHeight;
+                context.drawImage(videoRef.current, 0, 0);
+                const imageData = canvasRef.current.toDataURL("image/png");
+                setCapturedImage(imageData);
+                setFilePreview(imageData);
+            }
+        }
+        stopCameraStream();
+    };
+
+    const stopCameraStream = () => {
+        if (videoRef.current?.srcObject) {
+            const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
+            tracks.forEach((track) => track.stop());
+        }
+        setCameraActive(false);
+    };
+
     const handlePostSubmit = () => {
-        if (!content.trim() && !file) {
+        if (!content.trim() && !file && !capturedImage) {
             Notify("Please add content or a file to post", "error", "Error");
             return;
         }
@@ -42,21 +87,19 @@ const CreatePost = () => {
         formData.append("content", content);
         if (file) {
             formData.append("file", file);
+        } else if (capturedImage) {
+            formData.append("file", capturedImage);
         }
 
-        api.post("/posts/create", {
-            content: content,
-            file: file ? file : undefined,
-            type: "post"
-        })
-        .then(() => {
-            Notify("Post created successfully!", "success", "Success");
-            navigate("/");
-        })
-        .catch((err) => {
-            console.error(err);
-            Notify("Failed to create post", "error", "Error");
-        });
+        api.post("/posts/create", formData)
+            .then(() => {
+                Notify("Post created successfully!", "success", "Success");
+                navigate("/");
+            })
+            .catch((err) => {
+                console.error(err);
+                Notify("Failed to create post", "error", "Error");
+            });
     };
 
     return (
@@ -73,29 +116,25 @@ const CreatePost = () => {
             />
             <div className="file-upload-section">
                 <label className="file-upload-button">
-                    <img src="/images/picture.svg" alt="Upload" className="icon"/>
+                    <img src="/images/picture.svg" alt="Upload" className="icon" />
                     <input type="file" accept="image/*,video/*,application/pdf" onChange={handleFileChange} />
                 </label>
-                <button
-                    className="camera-button"
-                    onClick={() => {
-                        navigator.mediaDevices
-                            .getUserMedia({ video: true })
-                            .then((stream) => {
-                                const video = document.createElement("video");
-                                video.srcObject = stream;
-                                video.play();
-                                document.body.appendChild(video);
-                            })
-                            .catch((err) => console.error(err));
-                    }}
-                >
-                    <img src="/images/camera.svg" alt="Capture"className="icon" />
+                <button className="camera-button" >
+                    <img src="/images/camera.svg" alt="Capture" className="icon" />
                 </button>
             </div>
+            {cameraActive && (
+                <div className="camera-interface">
+                    <video ref={videoRef} className="camera-preview" />
+                    <canvas ref={canvasRef} style={{ display: "none" }} />
+                    <button className="capture-button" onClick={handleCapture}>
+                        Capture
+                    </button>
+                </div>
+            )}
             {filePreview && (
                 <div className="file-preview">
-                    {file?.type.startsWith("image/") ? (
+                    {file?.type?.startsWith("image/") || capturedImage ? (
                         <img src={filePreview} alt="Preview" />
                     ) : file?.type.startsWith("video/") ? (
                         <video controls src={filePreview} />

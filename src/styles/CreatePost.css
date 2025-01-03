@@ -104,18 +104,6 @@
 /* Media query for desktop screens */
 @media (min-width: 1024px) {
     .create-post-page {
-      /* padding-top: -100px; */
-      /* position: fixed;
-      top: 60%;
-      left: 40%;
-      transform: translate(-50%, -50%);
-      width: 50%;
-      max-width: 600px;
-      background-color: var(--background-primary);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 2rem;
-      border-radius: 8px;
-      z-index: 1000; */
       max-width: 700px;
       margin-left: 13vw;
       padding: 0 1rem;
@@ -124,3 +112,27 @@
   
     
   }
+
+  .camera-interface {
+    position: relative;
+    text-align: center;
+}
+
+.camera-preview {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.capture-button {
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--theme-color);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.capture-button:hover {
+    background: darken(var(--theme-color), 10%);
+}
