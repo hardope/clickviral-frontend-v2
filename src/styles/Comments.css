@@ -24,7 +24,9 @@
 .new-comment-input {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid var(--button-secondary);
+  border: 1px solid var(--primary-color);
+  background-color: var(--background-primary);
+  color: var(--text-primary);
   border-radius: 8px;
   resize: none;
   font-size: 1rem;
@@ -43,4 +45,41 @@
 
 .submit-comment-button:hover {
   background: darken(var(--theme-color), 10%);
+}
+
+.return-button {
+  background: none;
+  border: none;
+  color: var(--theme-color);
+  cursor: pointer;
+  margin-bottom: -2rem;
+  transition: color 0.3s;
+}
+
+.return-button:hover {
+  color: darken(var(--theme-color), 10%);
+}
+
+/* Media query for desktop screens */
+@media (min-width: 1024px) {
+  .comments-page {
+    /* padding-top: -100px; */
+    /* position: fixed;
+    top: 60%;
+    left: 40%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    max-width: 600px;
+    background-color: var(--background-primary);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    border-radius: 8px;
+    z-index: 1000; */
+    max-width: 700px;
+    margin-left: 13vw;
+    padding: 0 1rem;
+    margin-top: 0%;
+  }
+
+  
 }

@@ -4,6 +4,8 @@ import "../styles/Comments.css";
 import Loader from "../components/Loader";
 import { useNavigate, useParams } from "react-router-dom";
 import Notify from "../utils/Notify";
+import Back from '/images/back.svg';
+import profileSvg from '/images/profile.svg';
 
 const Comments = () => {
     const [post, setPost] = useState<any>();
@@ -108,12 +110,15 @@ const Comments = () => {
 
     return (
         <div className="comments-page">
+            <button className="return-button icon" onClick={() => navigate(-1)}>
+                <img src={Back} alt="Return" />
+            </button>
             <div className="post-section">
                 {post && (
                     <div className="post-card">
                         <div className="post-header">
                             <img
-                                src={post.user.profileImage}
+                                src={post.user.profileImage || profileSvg}
                                 alt={`${post.user.first_name}'s profile`}
                                 className="profile-pic"
                             />
@@ -127,13 +132,13 @@ const Comments = () => {
                         {post.content && <p className="post-content">{post.content}</p>}
                         <div className="separator"></div>
                         <div className="post-actions">
-                            <button
+                            {/* <button
                                 className={`like-button ${post.isLiked ? "liked" : ""}`}
                                 onClick={() => toggleLike(post.id)}
                             >
                                 {post.isLiked ? "❤️" : "🖤"} {post.likes}
                             </button>
-                            <button className="comment-button">💬 {post.comments}</button>
+                            <button className="comment-button">💬 {post.comments}</button> */}
                             <button className="share-button">🔗 Share</button>
                         </div>
                     </div>

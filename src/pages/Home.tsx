@@ -100,7 +100,7 @@ const Home = () => {
 				<div className="post-card" key={post.id}>
 				<div className="post-header">
 			<img
-				src={post.user.profileImage}
+				src={post.user.profileImage || profileSvg}
 				alt={`${post.user.first_name}'s profile`}
 				className="profile-pic"
 			/>
