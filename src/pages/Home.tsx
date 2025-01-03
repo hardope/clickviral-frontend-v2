@@ -4,6 +4,7 @@ import "../styles/Home.css";
 import profileSvg from '/images/profile.svg';
 import Loader from "../components/Loader";
 import { useNavigate } from "react-router-dom";
+import Notify from "../utils/Notify";
 
 const Home = () => {
 	const [userData, setUserData] = useState<any>(null);
@@ -13,6 +14,17 @@ const Home = () => {
 	const toggleLike = (id: string) => {
 		const updatedPosts = posts.map((post: any) => {
 		if (post.id === id) {
+			if (post.isLiked) {
+				api.post(`/posts/unlike/${id}`).catch((err) => {
+					console.log(err);
+					Notify("An error occurred while unliking the comment", "error", "Error");
+				});
+			} else {
+				api.post(`/posts/like/${id}`).catch((err) => {
+					console.log(err);
+					Notify("An error occurred while liking the comment", "error", "Error");
+				});
+			}
 			return {
 				...post,
 				isLiked: !post.isLiked,

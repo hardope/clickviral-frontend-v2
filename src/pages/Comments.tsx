@@ -2,18 +2,32 @@ import { useEffect, useState } from "react";
 import api from "../api";
 import "../styles/Comments.css";
 import Loader from "../components/Loader";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Notify from "../utils/Notify";
 
 const Comments = () => {
     const [post, setPost] = useState<any>();
-    const [comments, setComments] = useState<any>([]);
+    const [comments, setComments] = useState<any>(null);
     const [newComment, setNewComment] = useState<string>("");
-
+    const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
+
+    const loggedInUser = JSON.parse(localStorage.getItem("user") || "{}");
 
     const toggleLike = (id: string) => {
         const updatedPosts = comments.map((comment: any) => {
             if (comment.id === id) {
+                if (comment.isLiked) {
+                    api.post(`/posts/unlike/${id}`).catch((err) => {
+                        console.log(err);
+                        Notify("An error occurred while unliking the comment", "error", "Error");
+                    });
+                } else {
+                    api.post(`/posts/like/${id}`).catch((err) => {
+                        console.log(err);
+                        Notify("An error occurred while liking the comment", "error", "Error");
+                    });
+                }
                 return {
                     ...comment,
                     isLiked: !comment.isLiked,
@@ -47,18 +61,33 @@ const Comments = () => {
         if (!newComment.trim()) return;
 
         // Simulate adding a new comment locally
-        setComments([
-            ...comments,
-            {
-                id: Date.now().toString(),
-                user: { first_name: "You", last_name: "", profileImage: "" },
-                content: newComment,
-                created_at: new Date().toISOString(),
-                isLiked: false,
-                likes: 0,
-            },
-        ]);
-        setNewComment(""); // Clear input
+
+        // Send the new comment to the server
+        api.post("posts/create", {
+            parent_post_id: id,
+            content: newComment,
+            type: "comment",
+        })
+        .then((res) => {console.log(res)
+            Notify("Comment posted successfully", "success", "Success");
+            setComments([
+                ...comments,
+                {
+                    id: res.data.post.id,
+                    user: { first_name: loggedInUser.first_name, last_name: loggedInUser.last_name, profileImage: loggedInUser.profileImage },
+                    content: newComment,
+                    created_at: res.data.post.created_at,
+                    isLiked: false,
+                    comments: 0,
+                    likes: 0,
+                },
+            ]);
+            setNewComment(""); // Clear input
+        })
+        .catch((err) => {
+            console.log(err);
+            Notify("An error occurred while posting the comment", "error", "Error");
+        });
     };
 
     useEffect(() => {
@@ -124,7 +153,7 @@ const Comments = () => {
                         Post
                     </button>
                 </div>
-                {comments.length > 0 ? (
+                {comments ? (
                     comments.map((comment: any) => (
                         <div className="post-card" key={comment.id}>
                             <div className="post-header">
@@ -149,6 +178,8 @@ const Comments = () => {
                                 >
                                     {comment.isLiked ? "❤️" : "🖤"} {comment.likes}
                                 </button>
+                                <button className="comment-button" onClick={() => navigate(`/comments/${comment.id}`)}>💬 {comment.comments}</button>
+                                <button className="share-button">🔗 Share</button>
                             </div>
                         </div>
                     ))
