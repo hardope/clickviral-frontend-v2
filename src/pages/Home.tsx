@@ -80,7 +80,7 @@ const Home = () => {
 		{/* <button className="open-create-post-button"><span style={{ fontSize: "24px" }}>+</span></button> */}
 		{userData ? (
 		<>
-			<div className="create-post">
+			<div className="create-post" onClick={() => navigate("/createPost")}>
 			<div className="create-post-container">
 			<div className="create-post">
 			<div className="create-post-header">

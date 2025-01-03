@@ -9,6 +9,7 @@ import Chat from "./pages/Chat"
 import Notifications from "./pages/Notifications"
 import EditProfile from "./pages/EditProfile"
 import Comments from "./pages/Comments"
+import CreatePost from "./pages/newPost"
 
 function Logout() {
 	console.log("Logging out");
@@ -31,6 +32,7 @@ function App() {
 				<Route path="chats" element={<Layout><Chat /></Layout>} />
 				<Route path="notifications" element={<Layout><Notifications /></Layout>} />
 				<Route path="profile/edit" element={<ProtectedRoute><Layout><EditProfile /></Layout></ProtectedRoute>} />
+				<Route path="createPost" element={<ProtectedRoute><Layout><CreatePost/></Layout></ProtectedRoute>} />
 			</Routes>
 		</Router>
 	)
